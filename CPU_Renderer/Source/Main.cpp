@@ -32,12 +32,6 @@ bool setup_sdl() {
 		return false;
 	}
 
-	// SDL_SetRenderDrawColor(renderer, 240, 248, 255, 255);
-	// SDL_RenderClear(renderer);
-	// SDL_RenderPresent(renderer);
-
-	// SDL_Delay(3000);
-
 	return true;
 }
 
@@ -55,7 +49,8 @@ void keyboard_key_up(SDL_KeyboardEvent key) {
 }
 
 void mouse_button_down(SDL_MouseButtonEvent button) {
-
+	if (button.button == SDL_BUTTON_LEFT)
+		std::cout << "Pressed left mouse button at (" << button.x << ", " << button.y << ") position.\n";
 }
 
 void mouse_button_up(SDL_MouseButtonEvent button) {
@@ -104,7 +99,9 @@ void update() {
 }
 
 void render() {
-
+	SDL_SetRenderDrawColor(renderer, 240, 248, 255, 255);
+	SDL_RenderClear(renderer);
+	SDL_RenderPresent(renderer);
 }
 
 int main() {
