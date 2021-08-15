@@ -9,15 +9,15 @@ bool is_running = false;
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 
-bool setup_sdl() {
+bool setup_sdl(std::string title, int x, int y, SDL_WindowFlags flag) {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 		std::cout << "Failed to initialize SDL.\n";
 		return false;
 	}
 
 	window = SDL_CreateWindow(
-		"Garaj Engine [CPU Renderer]", SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_BORDERLESS
+		title.c_str(), SDL_WINDOWPOS_CENTERED,
+		SDL_WINDOWPOS_CENTERED, x, y, flag
 	);
 	
 	if (!window) {
@@ -105,7 +105,7 @@ void render() {
 }
 
 int main() {
-	is_running = setup_sdl();
+	is_running = setup_sdl("CPU Renderer", 800, 600, SDL_WINDOW_BORDERLESS);
 	setup();
 	while (is_running)
 	{
