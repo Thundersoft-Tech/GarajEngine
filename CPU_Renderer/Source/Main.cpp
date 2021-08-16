@@ -1,78 +1,10 @@
-#include <iostream>
-#include <stdint.h>
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
-#include <SDL_mixer.h>
-#undef main
+#include "Colors/Colors.h"
+#include "Display/Display.h"
 
 bool is_running = false;
-SDL_Window* window = NULL;
-SDL_Renderer* renderer = NULL;
-
-// Color Buffer properties
-uint32_t* color_buffer = NULL;
-SDL_Texture* color_buffer_texture = NULL;
-
-// Colors
-uint32_t ALICE_BLUE = 0xFFF0F8FF;
-uint32_t BLACK = 0xFF000000;
-uint32_t background_color = ALICE_BLUE;
-
-// Window properties
-int window_width = 800;
-int window_height = 600;
-std::string window_title = "CPU Renderer";
-SDL_WindowFlags window_flag = SDL_WINDOW_BORDERLESS;
-
-bool setup_sdl() {
-	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-		std::cout << "Failed to initialize SDL.\n";
-		return false;
-	}
-
-	// Query current resolution of the screen
-	SDL_DisplayMode display_mode;
-	SDL_GetCurrentDisplayMode(0, &display_mode);
-	window_width = display_mode.w;
-	window_height = display_mode.h;
-	// --------------------------------------
-
-	window = SDL_CreateWindow(
-		window_title.c_str(), SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED, window_width, window_height, window_flag
-	);
-	
-	if (!window) {
-		std::cout << "Failed to create SDL window.\n";
-		return false;
-	}
-
-	renderer = SDL_CreateRenderer(window, -1, 0);
-
-	if (!renderer) {
-		std::cout << "Failed to create SDL renderer.\n";
-		return false;
-	}
-
-	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
-
-	return true;
-}
 
 void setup() {
-	color_buffer = (uint32_t*)malloc(sizeof(uint32_t)* window_width * window_height);
-	if (!color_buffer) {
-		is_running = false;
-		std::cout << "Failed to allocate memory for the color buffer." << std::endl;
-	}
-	color_buffer_texture = SDL_CreateTexture(
-		renderer,
-		SDL_PIXELFORMAT_ARGB8888,
-		SDL_TEXTUREACCESS_STREAMING,
-		window_width,
-		window_height
-	);
+	is_running = setup_color_buffer();
 }
 
 void keyboard_key_down(SDL_KeyboardEvent key) {
@@ -134,53 +66,13 @@ void update() {
 
 }
 
-void draw_pixel(int x, int y, uint32_t * color) {
-	color_buffer[(window_width * y) + x] = *color;
-}
-
-void draw_grid(int multiple = 100) {
-	for (int y = 0; y < window_height; y++) {
-		for (int x = 0; x < window_width; x++) {
-			if ((x % multiple == 0) or (y % multiple == 0)) {
-				draw_pixel(x, y, &BLACK);
-			}
-		}
-	}
-}
-
-void render_clear_buffer() {
-	SDL_UpdateTexture(
-		color_buffer_texture,
-		NULL,
-		color_buffer,
-		(int)window_width * sizeof(uint32_t)
-	);
-	SDL_RenderCopy(renderer, color_buffer_texture, NULL, NULL);
-}
-
-void clear_color_buffer() {
-	for (int y = 0; y < window_height; y++) {
-		for (int x = 0; x < window_width; x++) {
-			draw_pixel(x, y, &background_color);
-		}
-	}
-}
-
-void draw_rectangle(int x, int y, int w, int h, uint32_t * color) {
-	for (int i = y; i < y + h; i++) {
-		for (int j = x; j < x + w; j++) {
-			draw_pixel(j, i, color);
-		}
-	}
-}
-
 void render() {
 	SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
 	SDL_RenderClear(renderer);
 
 	draw_rectangle(200, 200, 200, 100, &BLACK);
-	render_clear_buffer();
-	clear_color_buffer();
+	render_color_buffer();
+	clear_color_buffer(&ALICE_BLUE);
 
 	SDL_RenderPresent(renderer);
 }

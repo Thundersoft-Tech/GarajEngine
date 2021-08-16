@@ -1,0 +1,9 @@
+#include "Colors.h"
+
+uint32_t ALICE_BLUE = 0xFFF0F8FF;
+uint32_t BLACK = 0xFF000000;
+uint32_t RED = 0xFFFF0000;
+uint32_t GREEN = 0xFF00FF00;
+uint32_t BLUE = 0xFF0000FF;
+uint32_t YELLOW = 0xFFFFFF00;
+uint32_t WHITE = 0xFFFFFFFF;
