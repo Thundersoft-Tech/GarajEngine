@@ -12,10 +12,12 @@ SDL_Renderer* renderer = NULL;
 
 // Color Buffer properties
 uint32_t* color_buffer = NULL;
+SDL_Texture* color_buffer_texture = NULL;
+
+// Colors
 uint32_t ALICE_BLUE = 0xFFF0F8FF;
 uint32_t BLACK = 0xFF000000;
 uint32_t background_color = ALICE_BLUE;
-SDL_Texture* color_buffer_texture = NULL;
 
 // Window properties
 int window_width = 800;
@@ -164,11 +166,19 @@ void clear_color_buffer() {
 	}
 }
 
+void draw_rectangle(int x, int y, int w, int h, uint32_t * color) {
+	for (int i = y; i < y + h; i++) {
+		for (int j = x; j < x + w; j++) {
+			draw_pixel(j, i, color);
+		}
+	}
+}
+
 void render() {
 	SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
 	SDL_RenderClear(renderer);
 
-	draw_grid();
+	draw_rectangle(200, 200, 200, 100, &BLACK);
 	render_clear_buffer();
 	clear_color_buffer();
 
