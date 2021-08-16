@@ -26,5 +26,6 @@ void draw_grid(int multiple, uint32_t* color);
 void render_color_buffer();
 void clear_color_buffer(uint32_t* color);
 void draw_rectangle(int x, int y, int w, int h, uint32_t* color);
+void destroy();
 
 #endif

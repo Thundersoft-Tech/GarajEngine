@@ -177,11 +177,13 @@
   <ItemGroup>
     <ClCompile Include="Source\Colors\Colors.cpp" />
     <ClCompile Include="Source\Display\Display.cpp" />
+    <ClCompile Include="Source\Input\Input.cpp" />
     <ClCompile Include="Source\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Colors\Colors.h" />
     <ClInclude Include="Source\Display\Display.h" />
+    <ClInclude Include="Source\Input\Input.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

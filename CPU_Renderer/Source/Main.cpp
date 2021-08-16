@@ -1,36 +1,11 @@
 #include "Colors/Colors.h"
 #include "Display/Display.h"
+#include "Input/Input.h"
 
 bool is_running = false;
 
 void setup() {
 	is_running = setup_color_buffer();
-}
-
-void keyboard_key_down(SDL_KeyboardEvent key) {
-	if (key.keysym.sym == SDLK_ESCAPE)
-		is_running = false;
-}
-
-void keyboard_key_up(SDL_KeyboardEvent key) {
-
-}
-
-void mouse_button_down(SDL_MouseButtonEvent button) {
-	if (button.button == SDL_BUTTON_LEFT)
-		std::cout << "Pressed left mouse button at (" << button.x << ", " << button.y << ") position.\n";
-}
-
-void mouse_button_up(SDL_MouseButtonEvent button) {
-
-}
-
-void mouse_motion(SDL_MouseMotionEvent motion) {
-
-}
-
-void mouse_wheel(SDL_MouseWheelEvent wheel) {
-
 }
 
 void process_input() {
@@ -42,6 +17,8 @@ void process_input() {
 		is_running = false;
 		break;
 	case SDL_KEYDOWN:
+		if (event.key.keysym.sym == SDLK_ESCAPE)
+			is_running = false;
 		keyboard_key_down(event.key);
 		break;
 	case SDL_KEYUP:
@@ -75,13 +52,6 @@ void render() {
 	clear_color_buffer(&ALICE_BLUE);
 
 	SDL_RenderPresent(renderer);
-}
-
-void destroy() {
-	free(color_buffer);
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
-	SDL_Quit();
 }
 
 int main() {
