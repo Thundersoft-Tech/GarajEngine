@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdint.h>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -9,15 +10,25 @@ bool is_running = false;
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 
-bool setup_sdl(std::string title, int x, int y, SDL_WindowFlags flag) {
+// Color Buffer properties
+uint32_t* color_buffer = NULL;
+uint32_t background_color = 0xFF0000FF;
+
+// Window properties
+int window_width = 800;
+int window_height = 600;
+std::string window_title = "CPU Renderer";
+SDL_WindowFlags window_flag = SDL_WINDOW_BORDERLESS;
+
+bool setup_sdl() {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 		std::cout << "Failed to initialize SDL.\n";
 		return false;
 	}
 
 	window = SDL_CreateWindow(
-		title.c_str(), SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED, x, y, flag
+		window_title.c_str(), SDL_WINDOWPOS_CENTERED,
+		SDL_WINDOWPOS_CENTERED, window_width, window_height, window_flag
 	);
 	
 	if (!window) {
@@ -36,7 +47,11 @@ bool setup_sdl(std::string title, int x, int y, SDL_WindowFlags flag) {
 }
 
 void setup() {
-
+	color_buffer = (uint32_t*)malloc(sizeof(uint32_t)* window_width * window_height);
+	if (!color_buffer) {
+		is_running = false;
+		std::cout << "Failed to allocate memory for the color buffer." << std::endl;
+	}
 }
 
 void keyboard_key_down(SDL_KeyboardEvent key) {
@@ -98,14 +113,36 @@ void update() {
 
 }
 
+void draw_pixel(int x, int y, uint32_t * color) {
+	color_buffer[(window_width * y) + x] = *color;
+}
+
+void clear_color_buffer() {
+	for (int y = 0; y < window_height; y++) {
+		for (int x = 0; x < window_width; x++) {
+			draw_pixel(x, y, &background_color);
+		}
+	}
+}
+
 void render() {
 	SDL_SetRenderDrawColor(renderer, 240, 248, 255, 255);
 	SDL_RenderClear(renderer);
+
+	clear_color_buffer();
+
 	SDL_RenderPresent(renderer);
 }
 
+void destroy() {
+	free(color_buffer);
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
+	SDL_Quit();
+}
+
 int main() {
-	is_running = setup_sdl("CPU Renderer", 800, 600, SDL_WINDOW_BORDERLESS);
+	is_running = setup_sdl();
 	setup();
 	while (is_running)
 	{
@@ -113,5 +150,6 @@ int main() {
 		update();
 		render();
 	}
+	destroy();
 	return 0;
 }
