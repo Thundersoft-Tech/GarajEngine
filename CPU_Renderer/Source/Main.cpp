@@ -12,7 +12,8 @@ SDL_Renderer* renderer = NULL;
 
 // Color Buffer properties
 uint32_t* color_buffer = NULL;
-const uint32_t ALICE_BLUE = 0xFFF0F8FF;
+uint32_t ALICE_BLUE = 0xFFF0F8FF;
+uint32_t BLACK = 0xFF000000;
 uint32_t background_color = ALICE_BLUE;
 SDL_Texture* color_buffer_texture = NULL;
 
@@ -135,6 +136,16 @@ void draw_pixel(int x, int y, uint32_t * color) {
 	color_buffer[(window_width * y) + x] = *color;
 }
 
+void draw_grid(int multiple = 100) {
+	for (int y = 0; y < window_height; y++) {
+		for (int x = 0; x < window_width; x++) {
+			if ((x % multiple == 0) or (y % multiple == 0)) {
+				draw_pixel(x, y, &BLACK);
+			}
+		}
+	}
+}
+
 void render_clear_buffer() {
 	SDL_UpdateTexture(
 		color_buffer_texture,
@@ -157,6 +168,7 @@ void render() {
 	SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
 	SDL_RenderClear(renderer);
 
+	draw_grid();
 	render_clear_buffer();
 	clear_color_buffer();
 
