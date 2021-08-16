@@ -12,7 +12,9 @@ SDL_Renderer* renderer = NULL;
 
 // Color Buffer properties
 uint32_t* color_buffer = NULL;
-uint32_t background_color = 0xFF0000FF;
+const uint32_t ALICE_BLUE = 0xFFF0F8FF;
+uint32_t background_color = ALICE_BLUE;
+SDL_Texture* color_buffer_texture = NULL;
 
 // Window properties
 int window_width = 800;
@@ -52,6 +54,13 @@ void setup() {
 		is_running = false;
 		std::cout << "Failed to allocate memory for the color buffer." << std::endl;
 	}
+	color_buffer_texture = SDL_CreateTexture(
+		renderer,
+		SDL_PIXELFORMAT_ARGB8888,
+		SDL_TEXTUREACCESS_STREAMING,
+		window_width,
+		window_height
+	);
 }
 
 void keyboard_key_down(SDL_KeyboardEvent key) {
@@ -117,6 +126,16 @@ void draw_pixel(int x, int y, uint32_t * color) {
 	color_buffer[(window_width * y) + x] = *color;
 }
 
+void render_clear_buffer() {
+	SDL_UpdateTexture(
+		color_buffer_texture,
+		NULL,
+		color_buffer,
+		(int)window_width * sizeof(uint32_t)
+	);
+	SDL_RenderCopy(renderer, color_buffer_texture, NULL, NULL);
+}
+
 void clear_color_buffer() {
 	for (int y = 0; y < window_height; y++) {
 		for (int x = 0; x < window_width; x++) {
@@ -126,9 +145,10 @@ void clear_color_buffer() {
 }
 
 void render() {
-	SDL_SetRenderDrawColor(renderer, 240, 248, 255, 255);
+	SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
 	SDL_RenderClear(renderer);
 
+	render_clear_buffer();
 	clear_color_buffer();
 
 	SDL_RenderPresent(renderer);
