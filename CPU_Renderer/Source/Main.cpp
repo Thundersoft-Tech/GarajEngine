@@ -28,6 +28,13 @@ bool setup_sdl() {
 		return false;
 	}
 
+	// Query current resolution of the screen
+	SDL_DisplayMode display_mode;
+	SDL_GetCurrentDisplayMode(0, &display_mode);
+	window_width = display_mode.w;
+	window_height = display_mode.h;
+	// --------------------------------------
+
 	window = SDL_CreateWindow(
 		window_title.c_str(), SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED, window_width, window_height, window_flag
@@ -44,6 +51,8 @@ bool setup_sdl() {
 		std::cout << "Failed to create SDL renderer.\n";
 		return false;
 	}
+
+	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 
 	return true;
 }
