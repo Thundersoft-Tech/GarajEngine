@@ -101,7 +101,7 @@ void clear_color_buffer(uint32_t* color) {
 void draw_rectangle(int x, int y, int w, int h, uint32_t* color) {
 	for (int i = y; i < y + h; i++) {
 		for (int j = x; j < x + w; j++) {
-			draw_pixel(j + (w/2), i + (h/2), color);
+			draw_pixel(j - (w/2), i - (h/2), color);
 		}
 	}
 }
