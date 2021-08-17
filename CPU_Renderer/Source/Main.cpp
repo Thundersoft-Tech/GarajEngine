@@ -1,6 +1,7 @@
 #include "Colors/Colors.h"
 #include "Display/Display.h"
 #include "Input/Input.h"
+#include "Vector/Vector.h"
 
 bool is_running = false;
 
@@ -57,6 +58,7 @@ void render() {
 int main() {
 	is_running = setup_sdl();
 	setup();
+	vec3_t my_vector = { 2.0, 5.0, -7.0 };
 	while (is_running)
 	{
 		process_input();
