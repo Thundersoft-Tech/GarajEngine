@@ -3,10 +3,32 @@
 #include "Input/Input.h"
 #include "Vector/Vector.h"
 
+const int N_POINTS = 9 * 9 * 9;
+vec3_t cube_points[N_POINTS];
+vec2_t projected_points[N_POINTS];
+
+float fov_factor = 128;
+
 bool is_running = false;
+
+void setup_points() {
+	// load array of vectors
+	// from -1 to 1
+	int point_count = 0;
+	for (float x = -1; x <= 1; x += 0.25) {
+		for (float y = -1; y <= 1; y += 0.25) {
+			for (float z = -1; z <= 1; z += 0.25) {
+				vec3_t new_point = { x, y, z };
+				cube_points[point_count] = new_point;
+				point_count += 1;
+			}
+		}
+	}
+}
 
 void setup() {
 	is_running = setup_color_buffer();
+	setup_points();
 }
 
 void process_input() {
@@ -40,15 +62,34 @@ void process_input() {
 	}
 }
 
-void update() {
+vec2_t project(vec3_t point) {
+	vec2_t projected_point = { fov_factor * point.x, fov_factor * point.y };
+	return projected_point;
+}
 
+void orthographic_projection() {
+	for (int i = 0; i < N_POINTS; i++) {
+		vec3_t point = cube_points[i];
+		vec2_t projected_point = project(point);
+		projected_points[i] = projected_point;
+	}
+}
+
+void update() {
+	orthographic_projection();
+}
+
+void draw_cube() {
+	for (int i = 0; i < N_POINTS; i++) {
+		vec2_t projected_point = projected_points[i];
+		draw_rectangle(
+			projected_point.x + (window_width / 2), projected_point.y + (window_height / 2), 10, 10, &BLACK
+		);
+	}
 }
 
 void render() {
-	SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
-	SDL_RenderClear(renderer);
-
-	draw_rectangle(200, 200, 200, 100, &BLACK);
+	draw_cube();
 	render_color_buffer();
 	clear_color_buffer(&ALICE_BLUE);
 
@@ -58,7 +99,6 @@ void render() {
 int main() {
 	is_running = setup_sdl();
 	setup();
-	vec3_t my_vector = { 2.0, 5.0, -7.0 };
 	while (is_running)
 	{
 		process_input();

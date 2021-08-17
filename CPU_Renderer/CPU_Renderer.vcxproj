@@ -179,11 +179,13 @@
     <ClCompile Include="Source\Display\Display.cpp" />
     <ClCompile Include="Source\Input\Input.cpp" />
     <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\Vector\Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Colors\Colors.h" />
     <ClInclude Include="Source\Display\Display.h" />
     <ClInclude Include="Source\Input\Input.h" />
+    <ClInclude Include="Source\Vector\Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
