@@ -17,7 +17,8 @@ bool is_running = false;
 
 void setup() {
 	is_running = setup_color_buffer();
-	load_cube_mesh_data();
+	// load_cube_mesh_data();
+	is_running = load_obj_file_data("./Assets/Models/Cube/Cube.obj");
 }
 
 void process_input() {

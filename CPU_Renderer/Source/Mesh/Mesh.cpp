@@ -47,3 +47,24 @@ void destroy_mesh() {
 	mesh.faces.clear();
 	mesh.vertices.clear();
 }
+
+bool load_obj_file_data(std::string file_name) {
+	std::ifstream obj_file;
+	//obj_file.open(file_name, std::ios::in);
+	obj_file.open(file_name);
+	if (!obj_file) {
+		std::cout << "loading " << file_name << " failed.\n";
+	}
+	else {
+		while (obj_file) {
+			std::string line;
+			std::getline(obj_file, line);
+			const char* char_line = line.c_str();
+			if (char_line[0] == 'f') {
+				
+			}
+		}
+	}
+
+	obj_file.close();
+}
