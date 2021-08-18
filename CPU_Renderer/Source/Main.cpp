@@ -3,9 +3,6 @@
 #include "Input/Input.h"
 #include "Vector/Vector.h"
 
-const int N_POINTS = 9 * 9 * 9;
-vec3_t cube_points[N_POINTS];
-vec2_t projected_points[N_POINTS];
 vec3_t camera_position = { 0, 0, 5 };
 vec3_t cube_rotation = { 0, 0, 0 };
 
@@ -15,24 +12,8 @@ int previous_frame_time;
 
 bool is_running = false;
 
-void setup_points() {
-	// load array of vectors
-	// from -1 to 1
-	int point_count = 0;
-	for (float x = -1; x <= 1; x += 0.25) {
-		for (float y = -1; y <= 1; y += 0.25) {
-			for (float z = -1; z <= 1; z += 0.25) {
-				vec3_t new_point = { x, y, z };
-				cube_points[point_count] = new_point;
-				point_count += 1;
-			}
-		}
-	}
-}
-
 void setup() {
 	is_running = setup_color_buffer();
-	setup_points();
 }
 
 void process_input() {
@@ -73,16 +54,6 @@ vec2_t project(vec3_t point) {
 
 void projection() {
 	cube_rotation.y += 0.01;
-	for (int i = 0; i < N_POINTS; i++) {
-		vec3_t point = cube_points[i];
-		
-		vec3_t transformed_point = vec3_rotate_y(point, cube_rotation.y);
-
-		transformed_point.z -= camera_position.z;
-
-		vec2_t projected_point = project(transformed_point);
-		projected_points[i] = projected_point;
-	}
 }
 
 void update() {
@@ -97,12 +68,7 @@ void update() {
 }
 
 void draw_cube() {
-	for (int i = 0; i < N_POINTS; i++) {
-		vec2_t projected_point = projected_points[i];
-		draw_rectangle(
-			projected_point.x + (window_width / 2), projected_point.y + (window_height / 2), 10, 10, &BLACK
-		);
-	}
+
 }
 
 void render() {
