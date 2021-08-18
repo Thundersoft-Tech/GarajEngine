@@ -3,8 +3,9 @@
 #include "Input/Input.h"
 #include "Vector/Vector.h"
 #include "Mesh/Mesh.h"
+#include <vector>
 
-triangle_t triangles_to_render[N_MESH_FACES];
+std::vector<triangle_t> triangles_to_render;
 
 vec3_t camera_position = { 0, 0, -5 };
 vec3_t cube_rotation = { 0, 0, 0 };
@@ -58,6 +59,8 @@ vec2_t project(vec3_t point) {
 void projection() {
 	cube_rotation.y += 0.01;
 
+	triangles_to_render.clear();
+
 	// loop all mesh faces
 	for (int i = 0; i < N_MESH_FACES; i++) {
 		face_t mesh_face = mesh_faces[i];
@@ -87,7 +90,8 @@ void projection() {
 		}
 
 		// save the projected triangle in the array of triangles to render
-		triangles_to_render[i] = projected_triangle;
+		triangles_to_render.push_back(projected_triangle);
+
 	}
 
 }
@@ -105,7 +109,7 @@ void update() {
 
 void draw_cube() {
 	// loop all the projected triangles and render them
-	for (int i = 0; i < N_MESH_FACES; i++) {
+	for (int i = 0; i < triangles_to_render.size(); i++) {
 		triangle_t triangle = triangles_to_render[i];
 		draw_line(triangle.points[0].x, triangle.points[0].y, triangle.points[1].x, triangle.points[1].y, &BLACK);
 		draw_line(triangle.points[1].x, triangle.points[1].y, triangle.points[2].x, triangle.points[2].y, &BLACK);
