@@ -42,3 +42,8 @@ void load_cube_mesh_data() {
 		mesh.faces.push_back(cube_faces[i]);
 	}
 }
+
+void destroy_mesh() {
+	mesh.faces.clear();
+	mesh.vertices.clear();
+}

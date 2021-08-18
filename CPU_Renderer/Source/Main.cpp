@@ -56,13 +56,11 @@ vec2_t project(vec3_t point) {
 	return projected_point;
 }
 
-void projection() {
+void projection(int count = 0) {
 	mesh.rotation.y += 0.01;
 
-	triangles_to_render.clear();
-
 	// loop all mesh faces
-	for (int i = 0; i < N_CUBE_FACES; i++) {
+	for (int i = 0; i < mesh.faces.size(); i++) {
 		face_t mesh_face = mesh.faces[i];
 		vec3_t face_vertices[3];
 		face_vertices[0] = mesh.vertices[mesh_face.a - 1];
@@ -104,10 +102,12 @@ void update() {
 
 	previous_frame_time = SDL_GetTicks();
 
+	triangles_to_render.clear();
+
 	projection();
 }
 
-void draw_cube() {
+void draw_mesh() {
 	// loop all the projected triangles and render them
 	for (int i = 0; i < triangles_to_render.size(); i++) {
 		triangle_t triangle = triangles_to_render[i];
@@ -123,11 +123,16 @@ void draw_cube() {
 }
 
 void render() {
-	draw_cube();
+	draw_mesh();
 	render_color_buffer();
 	clear_color_buffer(&ALICE_BLUE);
 
 	SDL_RenderPresent(renderer);
+}
+
+void destroy() {
+	destroy_display();
+	destroy_mesh();
 }
 
 int main() {

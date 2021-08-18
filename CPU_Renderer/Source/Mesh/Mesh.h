@@ -22,6 +22,7 @@ extern mesh_t mesh;
 
 // function signature
 void load_cube_mesh_data();
+void destroy_mesh();
 
 #endif
 
