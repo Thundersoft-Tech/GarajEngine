@@ -106,6 +106,25 @@ void draw_rectangle(int x, int y, int w, int h, uint32_t* color) {
 	}
 }
 
+void draw_line(int x0, int y0, int x1, int y1, uint32_t* color) {
+	int delta_x = (x1 - x0);
+	int delta_y = (y1 - y0);
+
+	int side_length = abs(delta_x) >= abs(delta_y) ? abs(delta_x) : abs(delta_y);
+
+	float x_inc = delta_x / (float)side_length;
+	float y_inc = delta_y / (float)side_length;
+
+	float x = x0;
+	float y = y0;
+
+	for (int i = 0; i < side_length; i++) {
+		draw_pixel(x, y, color);
+		x += x_inc;
+		y += y_inc;
+	}
+}
+
 void destroy() {
 	free(color_buffer);
 	SDL_DestroyRenderer(renderer);

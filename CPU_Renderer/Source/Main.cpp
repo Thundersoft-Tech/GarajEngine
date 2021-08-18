@@ -107,6 +107,9 @@ void draw_cube() {
 	// loop all the projected triangles and render them
 	for (int i = 0; i < N_MESH_FACES; i++) {
 		triangle_t triangle = triangles_to_render[i];
+		draw_line(triangle.points[0].x, triangle.points[0].y, triangle.points[1].x, triangle.points[1].y, &BLACK);
+		draw_line(triangle.points[1].x, triangle.points[1].y, triangle.points[2].x, triangle.points[2].y, &BLACK);
+		draw_line(triangle.points[2].x, triangle.points[2].y, triangle.points[0].x, triangle.points[0].y, &BLACK);
 		for (int j = 0; j < 3; j++) {
 			draw_rectangle(
 				triangle.points[j].x, triangle.points[j].y, 10, 10, &BLACK
