@@ -1,6 +1,6 @@
 #include "Mesh.h"
 
-vec3_t mesh_vertices[N_MESH_VERTICES] = {
+vec3_t cube_vertices[N_CUBE_VERTICES] = {
 	{ -1, -1, -1 }, // 1
 	{ -1,  1, -1 }, // 2
 	{  1,  1, -1 }, // 3
@@ -11,7 +11,7 @@ vec3_t mesh_vertices[N_MESH_VERTICES] = {
 	{ -1, -1,  1 }, // 8
 };
 
-face_t mesh_faces[N_MESH_FACES] = {
+face_t cube_faces[N_CUBE_FACES] = {
 	// front
 	{ 1, 2, 3 },
 	{ 1, 3, 4 },
@@ -31,3 +31,14 @@ face_t mesh_faces[N_MESH_FACES] = {
 	{ 6, 8, 1 },
 	{ 6, 1, 4 },
 };
+
+mesh_t mesh;
+
+void load_cube_mesh_data() {
+	for (int i = 0; i < N_CUBE_VERTICES; i++) {
+		mesh.vertices.push_back(cube_vertices[i]);
+	}
+	for (int i = 0; i < N_CUBE_FACES; i++) {
+		mesh.faces.push_back(cube_faces[i]);
+	}
+}
