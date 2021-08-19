@@ -6,6 +6,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 #define N_CUBE_VERTICES 8
 extern vec3_t cube_vertices[N_CUBE_VERTICES];
@@ -26,7 +27,7 @@ extern mesh_t mesh;
 // function signature
 void load_cube_mesh_data();
 void destroy_mesh();
-bool load_obj_file_data(std::string file_name);
+bool load_obj_file(std::string file_name);
 
 #endif
 

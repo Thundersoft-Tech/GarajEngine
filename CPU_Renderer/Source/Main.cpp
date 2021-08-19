@@ -4,6 +4,7 @@
 #include "Vector/Vector.h"
 #include "Mesh/Mesh.h"
 #include <vector>
+#include <math.h>
 
 std::vector<triangle_t> triangles_to_render;
 
@@ -18,7 +19,7 @@ bool is_running = false;
 void setup() {
 	is_running = setup_color_buffer();
 	// load_cube_mesh_data();
-	is_running = load_obj_file_data("./Assets/Models/Cube/Cube.obj");
+	is_running = load_obj_file("./Assets/Models/Plane/F22.obj");
 }
 
 void process_input() {
@@ -74,6 +75,8 @@ void projection(int count = 0) {
 		for (int j = 0; j < 3; j++) {
 			vec3_t transformed_vertex = face_vertices[j];
 			transformed_vertex = vec3_rotate_y(transformed_vertex, mesh.rotation.y);
+			transformed_vertex = vec3_rotate_z(transformed_vertex, mesh.rotation.z);
+			transformed_vertex = vec3_rotate_x(transformed_vertex, mesh.rotation.x);
 
 			// translate vertex away from camera
 			transformed_vertex.z -= camera_position.z;
@@ -117,7 +120,7 @@ void draw_mesh() {
 		draw_line(triangle.points[2].x, triangle.points[2].y, triangle.points[0].x, triangle.points[0].y, &BLACK);
 		for (int j = 0; j < 3; j++) {
 			draw_rectangle(
-				triangle.points[j].x, triangle.points[j].y, 10, 10, &BLACK
+				triangle.points[j].x, triangle.points[j].y, 2, 2, &BLACK
 			);
 		}
 	}

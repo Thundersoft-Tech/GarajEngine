@@ -48,23 +48,60 @@ void destroy_mesh() {
 	mesh.vertices.clear();
 }
 
-bool load_obj_file_data(std::string file_name) {
+bool load_obj_file(std::string file_name) {
 	std::ifstream obj_file;
 	//obj_file.open(file_name, std::ios::in);
 	obj_file.open(file_name);
 	if (!obj_file) {
 		std::cout << "loading " << file_name << " failed.\n";
+		return false;
 	}
 	else {
+		face_t face;
+		vec3_t vertex;
 		while (obj_file) {
 			std::string line;
 			std::getline(obj_file, line);
-			const char* char_line = line.c_str();
-			if (char_line[0] == 'f') {
-				
+			if (line[0] == 'f' && line[1] == ' ') {
+				std::stringstream line_stream(line);
+				std::string portion;
+				face_t face;
+				// f 1/1/1 5/2/1 7/3/1 3/4/1
+				std::vector<int> face_values;
+				int i = 0;
+				while (std::getline(line_stream, portion, ' ')) {
+					if (i > 0) {
+						std::stringstream portion_stream(portion);
+						std::string value;
+						while (std::getline(portion_stream, value, '/')) {
+							face_values.push_back(std::stoi(value));
+							break;
+						}
+					}
+					i += 1;
+				}
+				face.a = face_values[0];
+				face.b = face_values[1];
+				face.c = face_values[2];
+				mesh.faces.push_back(face);
+			}
+			if (line[0] == 'v' && line[1] == ' ') {
+				std::stringstream line_stream(line);
+				std::string portion;
+				int i = 0;
+				while (std::getline(line_stream, portion, ' ')) {
+					if (i == 1)
+						vertex.x = std::stof(portion);
+					if (i == 2)
+						vertex.y = std::stof(portion);
+					if (i == 3)
+						vertex.z = std::stof(portion);
+					i += 1;
+				}
+				mesh.vertices.push_back(vertex);
 			}
 		}
 	}
-
 	obj_file.close();
+	return true;
 }
