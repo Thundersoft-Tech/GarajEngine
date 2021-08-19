@@ -19,7 +19,7 @@ bool is_running = false;
 void setup() {
 	is_running = setup_color_buffer();
 	// load_cube_mesh_data();
-	is_running = load_obj_file("./Assets/Models/Cube/Cube.obj");
+	is_running = load_obj_file("./Assets/Models/Plane/F22.obj");
 }
 
 void process_input() {
@@ -59,8 +59,8 @@ vec2_t project(vec3_t point) {
 }
 
 void projection(int count = 0) {
-	//mesh.rotation.x += 0.01;
-	mesh.rotation.y += 0.01;
+	mesh.rotation.x += 0.01;
+	//mesh.rotation.y += 0.01;
 	//mesh.rotation.z += 0.01;
 
 	// loop all mesh faces
