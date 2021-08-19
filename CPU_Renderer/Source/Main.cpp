@@ -98,7 +98,7 @@ void projection(int count = 0) {
 
 		vec3_t normal_vector = vec3_cross(vector_ab, vector_ac);
 
-		vec3_t camera_ray_vector = vec3_subtract(vector_a, camera_position);
+		vec3_t camera_ray_vector = vec3_subtract(camera_position, vector_a);
 
 		float dot_product = vec3_dot(camera_ray_vector, normal_vector);
 
