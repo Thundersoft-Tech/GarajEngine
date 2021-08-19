@@ -59,7 +59,9 @@ vec2_t project(vec3_t point) {
 }
 
 void projection(int count = 0) {
-	mesh.rotation.y += 0.01;
+	mesh.rotation.x += 0.01;
+	// mesh.rotation.y += 0.01;
+	// mesh.rotation.z += 0.01;
 
 	// loop all mesh faces
 	for (int i = 0; i < mesh.faces.size(); i++) {
@@ -74,9 +76,9 @@ void projection(int count = 0) {
 		// loop all 3 vertices of this current face and apply transformations
 		for (int j = 0; j < 3; j++) {
 			vec3_t transformed_vertex = face_vertices[j];
+			transformed_vertex = vec3_rotate_x(transformed_vertex, mesh.rotation.x);
 			transformed_vertex = vec3_rotate_y(transformed_vertex, mesh.rotation.y);
 			transformed_vertex = vec3_rotate_z(transformed_vertex, mesh.rotation.z);
-			transformed_vertex = vec3_rotate_x(transformed_vertex, mesh.rotation.x);
 
 			// translate vertex away from camera
 			transformed_vertex.z -= camera_position.z;
