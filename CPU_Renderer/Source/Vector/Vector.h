@@ -37,5 +37,6 @@ vec3_t vec3_add(vec3_t v1, vec3_t v2);
 vec3_t vec3_subtract(vec3_t v1, vec3_t v2);
 vec3_t vec3_multiply(vec3_t v, float scaler);
 vec3_t vec3_divide(vec3_t v, float scaler);
+vec3_t vec3_cross(vec3_t v1, vec3_t v2);
 
 #endif
