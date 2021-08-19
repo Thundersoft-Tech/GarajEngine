@@ -39,6 +39,11 @@ vec2_t vec2_divide(vec2_t v, float scaler) {
 	return result;
 }
 
+float vec2_dot(vec2_t v1, vec2_t v2) {
+	float result = (v1.x * v2.x) + (v1.y * v2.y);
+	return result;
+}
+
 ///////////////////////
 // 3D Vector functions
 //////////////////////
@@ -100,5 +105,10 @@ vec3_t vec3_cross(vec3_t v1, vec3_t v2) {
 	result.x = (v1.y * v2.z) - (v1.z * v2.y);
 	result.y = (v1.x * v2.z) - (v1.z * v2.x);
 	result.z = (v1.x * v2.y) - (v1.y * v2.x);
+	return result;
+}
+
+float vec3_dot(vec3_t v1, vec3_t v2) {
+	float result = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
 	return result;
 }
