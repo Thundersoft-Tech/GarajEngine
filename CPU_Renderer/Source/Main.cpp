@@ -8,7 +8,7 @@
 
 std::vector<triangle_t> triangles_to_render;
 
-vec3_t camera_position = { 0, 0, -5 };
+vec3_t camera_position = { 0, 0, 0 };
 
 float fov_factor = 640;
 
@@ -72,6 +72,7 @@ void projection(int count = 0) {
 		face_vertices[2] = mesh.vertices[mesh_face.c - 1];
 
 		triangle_t projected_triangle;
+		vec3_t transformed_vertices[3];
 
 		// loop all 3 vertices of this current face and apply transformations
 		for (int j = 0; j < 3; j++) {
@@ -81,10 +82,33 @@ void projection(int count = 0) {
 			transformed_vertex = vec3_rotate_z(transformed_vertex, mesh.rotation.z);
 
 			// translate vertex away from camera
-			transformed_vertex.z -= camera_position.z;
+			transformed_vertex.z += 5;
 
+			// save vertex
+			transformed_vertices[j] = transformed_vertex;
+		}
+
+		// Back-Face Culling
+		vec3_t vector_a = transformed_vertices[0];
+		vec3_t vector_b = transformed_vertices[1];
+		vec3_t vector_c = transformed_vertices[2];
+
+		vec3_t vector_ab = vec3_subtract(vector_b, vector_a);
+		vec3_t vector_ac = vec3_subtract(vector_c, vector_a);
+
+		vec3_t normal_vector = vec3_cross(vector_ab, vector_ac);
+
+		vec3_t camera_ray_vector = vec3_subtract(vector_a, camera_position);
+
+		float dot_product = vec3_dot(camera_ray_vector, normal_vector);
+
+		if (dot_product < 0)
+			continue;
+
+		// loop all vertices and perform projection
+		for (int j = 0; j < 3; j++){
 			// project the current vertex
-			vec2_t projected_point = project(transformed_vertex);
+			vec2_t projected_point = project(transformed_vertices[j]);
 
 			// scale and translate projected point
 			projected_point.x += (window_width / 2);
