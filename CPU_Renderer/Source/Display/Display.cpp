@@ -4,8 +4,8 @@ SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 uint32_t* color_buffer = NULL;
 SDL_Texture* color_buffer_texture = NULL;
-int window_width = 1280;
-int window_height = 720;
+int window_width = 800;
+int window_height = 600;
 std::string window_title = "CPU Renderer";
 SDL_WindowFlags window_flag = SDL_WINDOW_BORDERLESS;
 
