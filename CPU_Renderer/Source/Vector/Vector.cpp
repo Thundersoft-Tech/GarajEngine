@@ -44,6 +44,12 @@ float vec2_dot(vec2_t v1, vec2_t v2) {
 	return result;
 }
 
+void vec2_normalize(vec2_t* v) {
+	float v_length = vec2_length(*v);
+	v->x = v->x / v_length;
+	v->y = v->y / v_length;
+}
+
 ///////////////////////
 // 3D Vector functions
 //////////////////////
@@ -111,4 +117,11 @@ vec3_t vec3_cross(vec3_t v1, vec3_t v2) {
 float vec3_dot(vec3_t v1, vec3_t v2) {
 	float result = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
 	return result;
+}
+
+void vec3_normalize(vec3_t* v) {
+	float v_length = vec3_length(*v);
+	v->x = v->x / v_length;
+	v->y = v->y / v_length;
+	v->z = v->z / v_length;
 }

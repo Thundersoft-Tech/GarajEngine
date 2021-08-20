@@ -25,6 +25,7 @@ vec2_t vec2_subtract(vec2_t v1, vec2_t v2);
 vec2_t vec2_multiply(vec2_t v, float scaler);
 vec2_t vec2_divide(vec2_t v, float scaler);
 float vec2_dot(vec2_t v1, vec2_t v2);
+void vec2_normalize(vec2_t* v);
 
 ///////////////////////
 // 3D Vector functions
@@ -40,5 +41,6 @@ vec3_t vec3_multiply(vec3_t v, float scaler);
 vec3_t vec3_divide(vec3_t v, float scaler);
 vec3_t vec3_cross(vec3_t v1, vec3_t v2);
 float vec3_dot(vec3_t v1, vec3_t v2);
+void vec3_normalize(vec3_t* v);
 
 #endif
