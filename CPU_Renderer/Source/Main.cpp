@@ -19,7 +19,7 @@ bool is_running = false;
 void setup() {
 	is_running = setup_color_buffer();
 	// load_cube_mesh_data();
-	is_running = load_obj_file("./Assets/Models/Plane/F22.obj");
+	is_running = load_obj_file("./Assets/Models/Cube/Cube.obj");
 }
 
 void process_input() {
@@ -60,8 +60,8 @@ vec2_t project(vec3_t point) {
 
 void projection(int count = 0) {
 	mesh.rotation.x += 0.01;
-	//mesh.rotation.y += 0.01;
-	//mesh.rotation.z += 0.01;
+	mesh.rotation.y += 0.01;
+	mesh.rotation.z += 0.01;
 
 	// loop all mesh faces
 	for (int i = 0; i < mesh.faces.size(); i++) {
@@ -96,7 +96,11 @@ void projection(int count = 0) {
 		vec3_t vector_ab = vec3_subtract(vector_b, vector_a);
 		vec3_t vector_ac = vec3_subtract(vector_c, vector_a);
 
+		vec3_normalize(&vector_ab);
+		vec3_normalize(&vector_ac);
+
 		vec3_t normal_vector = vec3_cross(vector_ab, vector_ac);
+		
 		vec3_normalize(&normal_vector);
 
 		vec3_t camera_ray_vector = vec3_subtract(camera_position, vector_a);
