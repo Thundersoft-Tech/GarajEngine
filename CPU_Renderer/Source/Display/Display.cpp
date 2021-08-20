@@ -4,8 +4,8 @@ SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 uint32_t* color_buffer = NULL;
 SDL_Texture* color_buffer_texture = NULL;
-int window_width = 800;
-int window_height = 600;
+int window_width = 1280;
+int window_height = 720;
 std::string window_title = "CPU Renderer";
 SDL_WindowFlags window_flag = SDL_WINDOW_BORDERLESS;
 
@@ -104,6 +104,12 @@ void draw_rectangle(int x, int y, int w, int h, uint32_t* color) {
 			draw_pixel(j - (w/2), i - (h/2), color);
 		}
 	}
+}
+
+void draw_triangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t* color) {
+	draw_line(x0, y0, x1, y1, color);
+	draw_line(x1, y1, x2, y2, color);
+	draw_line(x2, y2, x0, y0, color);
 }
 
 void draw_line(int x0, int y0, int x1, int y1, uint32_t* color) {

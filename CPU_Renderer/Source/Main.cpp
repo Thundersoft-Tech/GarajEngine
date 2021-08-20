@@ -142,19 +142,29 @@ void update() {
 	projection();
 }
 
-void draw_mesh() {
-	// loop all the projected triangles and render them
+void draw_wireframe() {
 	for (int i = 0; i < triangles_to_render.size(); i++) {
 		triangle_t triangle = triangles_to_render[i];
-		draw_line(triangle.points[0].x, triangle.points[0].y, triangle.points[1].x, triangle.points[1].y, &BLACK);
-		draw_line(triangle.points[1].x, triangle.points[1].y, triangle.points[2].x, triangle.points[2].y, &BLACK);
-		draw_line(triangle.points[2].x, triangle.points[2].y, triangle.points[0].x, triangle.points[0].y, &BLACK);
+		draw_triangle(
+			triangle.points[0].x, triangle.points[0].y,
+			triangle.points[1].x, triangle.points[1].y,
+			triangle.points[2].x, triangle.points[2].y,
+			&BLACK
+		);
+		/*
 		for (int j = 0; j < 3; j++) {
 			draw_rectangle(
 				triangle.points[j].x, triangle.points[j].y, 2, 2, &BLACK
 			);
 		}
+		*/
 	}
+}
+
+void draw_mesh() {
+	// loop all the projected triangles and render them
+	//draw_wireframe();
+	draw_triangle(300, 100, 50, 400, 500, 700, &BLACK);
 }
 
 void render() {
