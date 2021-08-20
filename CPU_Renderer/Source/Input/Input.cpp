@@ -3,12 +3,19 @@
 #include "../Display/Display.h"
 #include "../Colors/Colors.h"
 
+bool wireframe = false;
+
 void keyboard_key_down(SDL_KeyboardEvent key) {
 
 }
 
 void keyboard_key_up(SDL_KeyboardEvent key) {
-
+	if (key.keysym.sym == SDLK_F2) {
+		if (wireframe)
+			wireframe = false;
+		else
+			wireframe = true;
+	}
 }
 
 void mouse_button_down(SDL_MouseButtonEvent button) {

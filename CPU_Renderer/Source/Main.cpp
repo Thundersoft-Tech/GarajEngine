@@ -82,7 +82,7 @@ void projection(int count = 0) {
 			transformed_vertex = vec3_rotate_z(transformed_vertex, mesh.rotation.z);
 
 			// translate vertex away from camera
-			transformed_vertex.z += 5;
+			transformed_vertex.z += 5.0;
 
 			// save vertex
 			transformed_vertices[j] = transformed_vertex;
@@ -116,8 +116,8 @@ void projection(int count = 0) {
 			vec2_t projected_point = project(transformed_vertices[j]);
 
 			// scale and translate projected point
-			projected_point.x += (window_width / 2);
-			projected_point.y += (window_height / 2);
+			projected_point.x += (window_width / 2.0);
+			projected_point.y += (window_height / 2.0);
 			
 			projected_triangle.points[j] = projected_point;
 		}
@@ -161,7 +161,7 @@ void draw_wireframe() {
 	}
 }
 
-void draw_flat_color() {
+void draw_triangles() {
 	for (int i = 0; i < triangles_to_render.size(); i++) {
 		triangle_t triangle = triangles_to_render[i];
 		draw_filled_triangle(
@@ -170,6 +170,14 @@ void draw_flat_color() {
 			triangle.points[2].x, triangle.points[2].y,
 			&WHITE
 		);
+		if (wireframe) {
+			draw_triangle(
+				triangle.points[0].x, triangle.points[0].y,
+				triangle.points[1].x, triangle.points[1].y,
+				triangle.points[2].x, triangle.points[2].y,
+				&BLACK
+			);
+		}
 		/*
 		for (int j = 0; j < 3; j++) {
 			draw_rectangle(
@@ -182,9 +190,8 @@ void draw_flat_color() {
 
 void draw_mesh() {
 	// loop all the projected triangles and render them
-	//draw_wireframe();
-	//draw_filled_triangle(300, 100, 50, 400, 500, 700, &BLACK);
-	draw_flat_color();
+	//draw_filled_triangle(300, 100, 50, 400, 500, 700, &WHITE);
+	draw_triangles();
 }
 
 void render() {
