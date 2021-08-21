@@ -133,12 +133,26 @@ void projection(int count = 0) {
 		}
 
 		projected_triangle.color = face_color;
-
+		projected_triangle.average_depth = (float)((transformed_vertices[0].z + transformed_vertices[1].z + transformed_vertices[2].z) / 3);
+		
 		// save the projected triangle in the array of triangles to render
 		triangles_to_render.push_back(projected_triangle);
-
 	}
 
+	// Sort triangles based on depth
+	bool swapped = false;
+	do
+	{
+		swapped = false;
+		for (int i = 1; i < triangles_to_render.size(); i++) {
+			if (triangles_to_render[i - 1].average_depth < triangles_to_render[i].average_depth) {
+				triangle_t tmp = triangles_to_render[i - 1];
+				triangles_to_render[i - 1] = triangles_to_render[i];
+				triangles_to_render[i] = tmp;
+				swapped = true;
+			}
+		}
+	} while (swapped);
 }
 
 void update() {
