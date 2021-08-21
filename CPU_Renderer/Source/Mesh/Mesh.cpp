@@ -13,23 +13,23 @@ vec3_t cube_vertices[N_CUBE_VERTICES] = {
 
 face_t cube_faces[N_CUBE_FACES] = {
 	// front
-	{ 1, 2, 3 },
-	{ 1, 3, 4 },
+	{ 1, 2, 3, &ORANGE },
+	{ 1, 3, 4, &WHITE },
 	// right
-	{ 4, 3, 5 },
-	{ 4, 5, 6 },
+	{ 4, 3, 5, &RED },
+	{ 4, 5, 6, &WHITE },
 	// back
-	{ 6, 5, 7 },
-	{ 6, 7, 8 },
+	{ 6, 5, 7, &YELLOW },
+	{ 6, 7, 8, &WHITE },
 	// left
-	{ 8, 7, 2 },
-	{ 8, 2, 1 },
+	{ 8, 7, 2, &GREEN },
+	{ 8, 2, 1, &WHITE },
 	// top
-	{ 2, 7, 5 },
-	{ 2, 5, 3 },
+	{ 2, 7, 5, &BLUE },
+	{ 2, 5, 3, &WHITE },
 	// bottom
-	{ 6, 8, 1 },
-	{ 6, 1, 4 },
+	{ 6, 8, 1, &ALICE_BLUE },
+	{ 6, 1, 4, &WHITE },
 };
 
 mesh_t mesh;

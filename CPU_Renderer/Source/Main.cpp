@@ -18,8 +18,8 @@ bool is_running = false;
 
 void setup() {
 	is_running = setup_color_buffer();
-	// load_cube_mesh_data();
-	is_running = load_obj_file("./Assets/Models/Cube/Cube.obj");
+	load_cube_mesh_data();
+	// is_running = load_obj_file("./Assets/Models/Cube/Cube.obj");
 }
 
 void process_input() {
@@ -66,6 +66,8 @@ void projection(int count = 0) {
 	// loop all mesh faces
 	for (int i = 0; i < mesh.faces.size(); i++) {
 		face_t mesh_face = mesh.faces[i];
+		uint32_t* face_color = mesh.faces[i].color;
+
 		vec3_t face_vertices[3];
 		face_vertices[0] = mesh.vertices[mesh_face.a - 1];
 		face_vertices[1] = mesh.vertices[mesh_face.b - 1];
@@ -130,6 +132,8 @@ void projection(int count = 0) {
 			projected_triangle.points[j] = projected_point;
 		}
 
+		projected_triangle.color = face_color;
+
 		// save the projected triangle in the array of triangles to render
 		triangles_to_render.push_back(projected_triangle);
 
@@ -162,7 +166,7 @@ void draw_wireframe() {
 		if (render_mode == VERTEX) {
 			for (int j = 0; j < 3; j++) {
 				draw_rectangle(
-					triangle.points[j].x, triangle.points[j].y, 10, 10, &WHITE
+					triangle.points[j].x, triangle.points[j].y, 10, 10, &ORANGE
 				);
 			}
 		}
@@ -176,7 +180,7 @@ void draw_triangles() {
 			triangle.points[0].x, triangle.points[0].y,
 			triangle.points[1].x, triangle.points[1].y,
 			triangle.points[2].x, triangle.points[2].y,
-			&WHITE
+			triangle.color
 		);
 		if (render_mode == FILLED_OUTLINE) {
 			draw_triangle(

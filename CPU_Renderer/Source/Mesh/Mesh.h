@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include "../Colors/Colors.h"
 
 #define N_CUBE_VERTICES 8
 extern vec3_t cube_vertices[N_CUBE_VERTICES];
