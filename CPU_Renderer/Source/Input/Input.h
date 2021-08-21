@@ -3,7 +3,10 @@
 
 #include "SDL.h"
 
-extern bool wireframe;
+enum render_modes { WIREFRAME, VERTEX, FILLED, FILLED_OUTLINE };
+enum culling_modes { BACK_FACE_CULLING, FRONT_FACE_CULLING, CULLING_DISABLED };
+extern render_modes render_mode;
+extern culling_modes culling;
 
 void keyboard_key_down(SDL_KeyboardEvent key);
 void keyboard_key_up(SDL_KeyboardEvent key);

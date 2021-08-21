@@ -88,28 +88,36 @@ void projection(int count = 0) {
 			transformed_vertices[j] = transformed_vertex;
 		}
 
-		// Back-Face Culling
-		vec3_t vector_a = transformed_vertices[0];
-		vec3_t vector_b = transformed_vertices[1];
-		vec3_t vector_c = transformed_vertices[2];
+		if (culling != CULLING_DISABLED){
+			// Back-Face Culling
+			vec3_t vector_a = transformed_vertices[0];
+			vec3_t vector_b = transformed_vertices[1];
+			vec3_t vector_c = transformed_vertices[2];
 
-		vec3_t vector_ab = vec3_subtract(vector_b, vector_a);
-		vec3_t vector_ac = vec3_subtract(vector_c, vector_a);
+			vec3_t vector_ab = vec3_subtract(vector_b, vector_a);
+			vec3_t vector_ac = vec3_subtract(vector_c, vector_a);
 
-		vec3_normalize(&vector_ab);
-		vec3_normalize(&vector_ac);
+			vec3_normalize(&vector_ab);
+			vec3_normalize(&vector_ac);
 
-		vec3_t normal_vector = vec3_cross(vector_ab, vector_ac);
-		
-		vec3_normalize(&normal_vector);
+			vec3_t normal_vector = vec3_cross(vector_ab, vector_ac);
 
-		vec3_t camera_ray_vector = vec3_subtract(camera_position, vector_a);
+			vec3_normalize(&normal_vector);
 
-		float dot_product = vec3_dot(normal_vector, camera_ray_vector);
+			vec3_t camera_ray_vector = vec3_subtract(camera_position, vector_a);
 
-		if (dot_product < 0)
-			continue;
+			float dot_product = vec3_dot(normal_vector, camera_ray_vector);
 
+			if (culling == BACK_FACE_CULLING) {
+				if (dot_product < 0)
+					continue;
+			}
+			else
+			{
+				if (dot_product > 0)
+					continue;
+			}
+		}
 		// loop all vertices and perform projection
 		for (int j = 0; j < 3; j++){
 			// project the current vertex
@@ -151,13 +159,13 @@ void draw_wireframe() {
 			triangle.points[2].x, triangle.points[2].y,
 			&WHITE
 		);
-		/*
-		for (int j = 0; j < 3; j++) {
-			draw_rectangle(
-				triangle.points[j].x, triangle.points[j].y, 2, 2, &BLACK
-			);
+		if (render_mode == VERTEX) {
+			for (int j = 0; j < 3; j++) {
+				draw_rectangle(
+					triangle.points[j].x, triangle.points[j].y, 10, 10, &WHITE
+				);
+			}
 		}
-		*/
 	}
 }
 
@@ -170,7 +178,7 @@ void draw_triangles() {
 			triangle.points[2].x, triangle.points[2].y,
 			&WHITE
 		);
-		if (wireframe) {
+		if (render_mode == FILLED_OUTLINE) {
 			draw_triangle(
 				triangle.points[0].x, triangle.points[0].y,
 				triangle.points[1].x, triangle.points[1].y,
@@ -178,20 +186,14 @@ void draw_triangles() {
 				&BLACK
 			);
 		}
-		/*
-		for (int j = 0; j < 3; j++) {
-			draw_rectangle(
-				triangle.points[j].x, triangle.points[j].y, 2, 2, &BLACK
-			);
-		}
-		*/
 	}
 }
 
 void draw_mesh() {
-	// loop all the projected triangles and render them
-	//draw_filled_triangle(300, 100, 50, 400, 500, 700, &WHITE);
-	draw_triangles();
+	if (render_mode == FILLED_OUTLINE || render_mode == FILLED)
+		draw_triangles();
+	if (render_mode == WIREFRAME || render_mode == VERTEX)
+		draw_wireframe();
 }
 
 void render() {
