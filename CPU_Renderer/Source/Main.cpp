@@ -66,11 +66,14 @@ void projection(int count = 0) {
 
 	mesh.scale.x += 0.002;
 	mesh.scale.y += 0.001;
-	// mesh.scale.z += 0.002;
+
+	mesh.translation.x += 0.002;
 	
 	// create scale matrix that will be used to multiplye mesh vertices
-
 	mat4_t scale_matrix = mat4_make_scale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
+
+	// create translation matrix
+	mat4_t translation_matrix = mat4_make_translation(mesh.translation.x, mesh.translation.y, mesh.translation.z);
 
 	// loop all mesh faces
 	for (int i = 0; i < mesh.faces.size(); i++) {
@@ -90,7 +93,10 @@ void projection(int count = 0) {
 			vec4_t transformed_vertex = vec4_from_vec3(face_vertices[j]);
 
 			// scale matrix transformation
-			transformed_vertex = mat4_mul_vec4(scale_matrix, transformed_vertex);
+			//transformed_vertex = mat4_mul_vec4(scale_matrix, transformed_vertex);
+			
+			// translation matrix transformation
+			transformed_vertex = mat4_mul_vec4(translation_matrix, transformed_vertex);
 
 			/*
 			transformed_vertex = vec3_rotate_x(transformed_vertex, mesh.rotation.x);
