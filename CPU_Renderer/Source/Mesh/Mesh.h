@@ -18,7 +18,7 @@ extern face_t cube_faces[N_CUBE_FACES];
 typedef struct {
 	std::vector<vec3_t> vertices;
 	std::vector<face_t> faces;
-	vec3_t position;
+	vec3_t translation;
 	vec3_t rotation;
 	vec3_t scale;
 } mesh_t;

@@ -41,6 +41,7 @@ void load_cube_mesh_data() {
 	for (int i = 0; i < N_CUBE_FACES; i++) {
 		mesh.faces.push_back(cube_faces[i]);
 	}
+	mesh.scale = { 1, 1, 1 };
 }
 
 void destroy_mesh() {
@@ -103,5 +104,6 @@ bool load_obj_file(std::string file_name) {
 		}
 	}
 	obj_file.close();
+	mesh.scale = { 1, 1, 1 };
 	return true;
 }

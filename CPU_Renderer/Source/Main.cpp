@@ -5,6 +5,7 @@
 #include "Mesh/Mesh.h"
 #include <vector>
 #include <math.h>
+#include "Matrix/Matrix.h"
 
 std::vector<triangle_t> triangles_to_render;
 
@@ -63,6 +64,14 @@ void projection(int count = 0) {
 	mesh.rotation.y += 0.01;
 	mesh.rotation.z += 0.01;
 
+	mesh.scale.x += 0.002;
+	mesh.scale.y += 0.001;
+	// mesh.scale.z += 0.002;
+	
+	// create scale matrix that will be used to multiplye mesh vertices
+
+	mat4_t scale_matrix = mat4_make_scale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
+
 	// loop all mesh faces
 	for (int i = 0; i < mesh.faces.size(); i++) {
 		face_t mesh_face = mesh.faces[i];
@@ -74,14 +83,20 @@ void projection(int count = 0) {
 		face_vertices[2] = mesh.vertices[mesh_face.c - 1];
 
 		triangle_t projected_triangle;
-		vec3_t transformed_vertices[3];
+		vec4_t transformed_vertices[3];
 
 		// loop all 3 vertices of this current face and apply transformations
 		for (int j = 0; j < 3; j++) {
-			vec3_t transformed_vertex = face_vertices[j];
+			vec4_t transformed_vertex = vec4_from_vec3(face_vertices[j]);
+
+			// scale matrix transformation
+			transformed_vertex = mat4_mul_vec4(scale_matrix, transformed_vertex);
+
+			/*
 			transformed_vertex = vec3_rotate_x(transformed_vertex, mesh.rotation.x);
 			transformed_vertex = vec3_rotate_y(transformed_vertex, mesh.rotation.y);
 			transformed_vertex = vec3_rotate_z(transformed_vertex, mesh.rotation.z);
+			*/
 
 			// translate vertex away from camera
 			transformed_vertex.z += 5.0;
@@ -92,9 +107,9 @@ void projection(int count = 0) {
 
 		if (culling != CULLING_DISABLED){
 			// Back-Face Culling
-			vec3_t vector_a = transformed_vertices[0];
-			vec3_t vector_b = transformed_vertices[1];
-			vec3_t vector_c = transformed_vertices[2];
+			vec3_t vector_a = vec3_from_vec4(transformed_vertices[0]);
+			vec3_t vector_b = vec3_from_vec4(transformed_vertices[1]);
+			vec3_t vector_c = vec3_from_vec4(transformed_vertices[2]);
 
 			vec3_t vector_ab = vec3_subtract(vector_b, vector_a);
 			vec3_t vector_ac = vec3_subtract(vector_c, vector_a);
@@ -123,7 +138,7 @@ void projection(int count = 0) {
 		// loop all vertices and perform projection
 		for (int j = 0; j < 3; j++){
 			// project the current vertex
-			vec2_t projected_point = project(transformed_vertices[j]);
+			vec2_t projected_point = project(vec3_from_vec4(transformed_vertices[j]));
 
 			// scale and translate projected point
 			projected_point.x += (window_width / 2.0);
