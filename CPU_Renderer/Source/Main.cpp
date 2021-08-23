@@ -11,7 +11,8 @@ std::vector<triangle_t> triangles_to_render;
 
 vec3_t camera_position = { 0, 0, 0 };
 
-float fov_factor = 640;
+//float fov_factor = 640;
+mat4_t proj_matrix;
 
 int previous_frame_time;
 
@@ -19,6 +20,11 @@ bool is_running = false;
 
 void setup() {
 	is_running = setup_color_buffer();
+	float fov = M_PI / 3.0;
+	float aspect = (float)window_height / (float)window_width;
+	float z_near = 0.1;
+	float z_far = 100.0;
+	proj_matrix = mat4_make_perspective(fov, aspect, z_near, z_far);
 	load_cube_mesh_data();
 	// is_running = load_obj_file("./Assets/Models/Cube/Cube.obj");
 }
@@ -54,17 +60,19 @@ void process_input() {
 	}
 }
 
+/*
 vec2_t project(vec3_t point) {
 	vec2_t projected_point = { (fov_factor * point.x) / point.z, (fov_factor * point.y) / point.z };
 	return projected_point;
 }
+*/
 
 void projection(int count = 0) {
-	mesh.rotation.x += 0.01;
+	//mesh.rotation.x += 0.01;
 	mesh.rotation.y += 0.01;
-	mesh.rotation.z += 0.01;
+	//mesh.rotation.z += 0.01;
 
-	mesh.scale.x += 0.002;
+	//mesh.scale.x += 0.002;
 	//mesh.scale.y += 0.001;
 
 	//mesh.translation.x += 0.01;
@@ -138,13 +146,18 @@ void projection(int count = 0) {
 		// loop all vertices and perform projection
 		for (int j = 0; j < 3; j++){
 			// project the current vertex
-			vec2_t projected_point = project(vec3_from_vec4(transformed_vertices[j]));
+			vec4_t projected_point = mat4_mul_vec4_project(proj_matrix, transformed_vertices[j]);// = project(vec3_from_vec4(transformed_vertices[j]));
 
-			// scale and translate projected point
+			// scaling projected point
+
+			projected_point.x *= (window_width / 2.0);
+			projected_point.y *= (window_height / 2.0);
+
+			// translating projected point
 			projected_point.x += (window_width / 2.0);
 			projected_point.y += (window_height / 2.0);
 			
-			projected_triangle.points[j] = projected_point;
+			projected_triangle.points[j] = vec2_from_vec4(projected_point);
 		}
 
 		projected_triangle.color = face_color;

@@ -146,3 +146,10 @@ vec3_t vec3_from_vec4(vec4_t v) {
 	result.z = v.z;
 	return result;
 }
+
+vec2_t vec2_from_vec4(vec4_t v) {
+	vec2_t result;
+	result.x = v.x;
+	result.y = v.y;
+	return result;
+}
