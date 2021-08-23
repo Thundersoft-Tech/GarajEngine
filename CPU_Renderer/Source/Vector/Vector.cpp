@@ -65,9 +65,9 @@ vec3_t vec3_rotate_x(vec3_t v, float angle) {
 
 vec3_t vec3_rotate_y(vec3_t v, float angle) {
 	vec3_t rotated_vector = {
-		v.x * cos(angle) - v.z * sin(angle),
+		v.x * cos(angle) + v.z * sin(angle),
 		v.y,
-		v.z * cos(angle) + v.x * sin(angle)
+		v.z * cos(angle) - v.x * sin(angle)
 	};
 	return rotated_vector;
 }
