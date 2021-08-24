@@ -62,7 +62,7 @@ void process_input() {
 }
 
 void projection(int count = 0) {
-	mesh.rotation.x += 0.01;
+	//mesh.rotation.x += 0.01;
 	//mesh.rotation.y += 0.01;
 	//mesh.rotation.z += 0.01;
 
@@ -145,6 +145,9 @@ void projection(int count = 0) {
 
 			projected_point.x *= (window_width / 2.0);
 			projected_point.y *= (window_height / 2.0);
+
+			// invert y values
+			projected_point.y *= -1;
 
 			// translating projected point
 			projected_point.x += (window_width / 2.0);
