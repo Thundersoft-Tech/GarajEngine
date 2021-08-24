@@ -13,23 +13,23 @@ vec3_t cube_vertices[N_CUBE_VERTICES] = {
 
 face_t cube_faces[N_CUBE_FACES] = {
 	// front
-	{ 1, 2, 3, &ORANGE },
-	{ 1, 3, 4, &WHITE },
+	{ 1, 2, 3, WHITE },
+	{ 1, 3, 4, WHITE },
 	// right
-	{ 4, 3, 5, &RED },
-	{ 4, 5, 6, &WHITE },
+	{ 4, 3, 5, WHITE },
+	{ 4, 5, 6, WHITE },
 	// back
-	{ 6, 5, 7, &YELLOW },
-	{ 6, 7, 8, &WHITE },
+	{ 6, 5, 7, WHITE },
+	{ 6, 7, 8, WHITE },
 	// left
-	{ 8, 7, 2, &GREEN },
-	{ 8, 2, 1, &WHITE },
+	{ 8, 7, 2, WHITE },
+	{ 8, 2, 1, WHITE },
 	// top
-	{ 2, 7, 5, &BLUE },
-	{ 2, 5, 3, &WHITE },
+	{ 2, 7, 5, WHITE },
+	{ 2, 5, 3, WHITE },
 	// bottom
-	{ 6, 8, 1, &ALICE_BLUE },
-	{ 6, 1, 4, &WHITE },
+	{ 6, 8, 1, WHITE },
+	{ 6, 1, 4, WHITE },
 };
 
 mesh_t mesh;
@@ -84,6 +84,7 @@ bool load_obj_file(std::string file_name) {
 				face.a = face_values[0];
 				face.b = face_values[1];
 				face.c = face_values[2];
+				face.color = WHITE;
 				mesh.faces.push_back(face);
 			}
 			if (line[0] == 'v' && line[1] == ' ') {

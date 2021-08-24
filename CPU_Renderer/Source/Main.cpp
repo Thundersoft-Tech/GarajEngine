@@ -6,6 +6,7 @@
 #include <vector>
 #include <math.h>
 #include "Matrix/Matrix.h"
+#include "Light/Light.h"
 
 std::vector<triangle_t> triangles_to_render;
 
@@ -25,8 +26,8 @@ void setup() {
 	float z_near = 0.1;
 	float z_far = 100.0;
 	proj_matrix = mat4_make_perspective(fov, aspect, z_near, z_far);
-	load_cube_mesh_data();
-	// is_running = load_obj_file("./Assets/Models/Cube/Cube.obj");
+	//load_cube_mesh_data();
+	is_running = load_obj_file("./Assets/Models/Plane/F22.obj");
 }
 
 void process_input() {
@@ -60,23 +61,16 @@ void process_input() {
 	}
 }
 
-/*
-vec2_t project(vec3_t point) {
-	vec2_t projected_point = { (fov_factor * point.x) / point.z, (fov_factor * point.y) / point.z };
-	return projected_point;
-}
-*/
-
 void projection(int count = 0) {
-	//mesh.rotation.x += 0.01;
-	mesh.rotation.y += 0.01;
+	mesh.rotation.x += 0.01;
+	//mesh.rotation.y += 0.01;
 	//mesh.rotation.z += 0.01;
 
 	//mesh.scale.x += 0.002;
 	//mesh.scale.y += 0.001;
 
 	//mesh.translation.x += 0.01;
-	mesh.translation.z = 5.0; // move away from the camera
+	mesh.translation.z = 4.0; // move away from the camera
 
 	mat4_t translation_matrix = mat4_make_translation(mesh.translation.x, mesh.translation.y, mesh.translation.z);
 	mat4_t rotation_matrix_x = mat4_make_rotation_x(mesh.rotation.x);
@@ -95,7 +89,7 @@ void projection(int count = 0) {
 	// loop all mesh faces
 	for (int i = 0; i < mesh.faces.size(); i++) {
 		face_t mesh_face = mesh.faces[i];
-		uint32_t* face_color = mesh.faces[i].color;
+		uint32_t face_color = mesh.faces[i].color;
 
 		vec3_t face_vertices[3];
 		face_vertices[0] = mesh.vertices[mesh_face.a - 1];
@@ -113,36 +107,35 @@ void projection(int count = 0) {
 			transformed_vertices[j] = transformed_vertex;
 		}
 
-		if (culling != CULLING_DISABLED){
-			// Back-Face Culling
-			vec3_t vector_a = vec3_from_vec4(transformed_vertices[0]);
-			vec3_t vector_b = vec3_from_vec4(transformed_vertices[1]);
-			vec3_t vector_c = vec3_from_vec4(transformed_vertices[2]);
+		// Back-Face Culling
+		vec3_t vector_a = vec3_from_vec4(transformed_vertices[0]);
+		vec3_t vector_b = vec3_from_vec4(transformed_vertices[1]);
+		vec3_t vector_c = vec3_from_vec4(transformed_vertices[2]);
 
-			vec3_t vector_ab = vec3_subtract(vector_b, vector_a);
-			vec3_t vector_ac = vec3_subtract(vector_c, vector_a);
+		vec3_t vector_ab = vec3_subtract(vector_b, vector_a);
+		vec3_t vector_ac = vec3_subtract(vector_c, vector_a);
 
-			vec3_normalize(&vector_ab);
-			vec3_normalize(&vector_ac);
+		vec3_normalize(&vector_ab);
+		vec3_normalize(&vector_ac);
 
-			vec3_t normal_vector = vec3_cross(vector_ab, vector_ac);
+		vec3_t normal_vector = vec3_cross(vector_ab, vector_ac);
 
-			vec3_normalize(&normal_vector);
+		vec3_normalize(&normal_vector);
 
-			vec3_t camera_ray_vector = vec3_subtract(camera_position, vector_a);
+		vec3_t camera_ray_vector = vec3_subtract(camera_position, vector_a);
 
-			float dot_product = vec3_dot(normal_vector, camera_ray_vector);
+		float dot_product = vec3_dot(normal_vector, camera_ray_vector);
 
-			if (culling == BACK_FACE_CULLING) {
-				if (dot_product < 0)
-					continue;
-			}
-			else
-			{
-				if (dot_product > 0)
-					continue;
-			}
+		if (culling == BACK_FACE_CULLING) {
+			if (dot_product < 0)
+				continue;
 		}
+		else if(culling == FRONT_FACE_CULLING)
+		{
+			if (dot_product > 0)
+				continue;
+		}
+
 		// loop all vertices and perform projection
 		for (int j = 0; j < 3; j++){
 			// project the current vertex
@@ -159,8 +152,13 @@ void projection(int count = 0) {
 			
 			projected_triangle.points[j] = vec2_from_vec4(projected_point);
 		}
+		vec3_normalize(&light.direction);
+		float percentage_factor = -vec3_dot(normal_vector, light.direction);
+		uint32_t shaded_color = face_color;
 
-		projected_triangle.color = face_color;
+		shaded_color = apply_light_intensity(shaded_color, percentage_factor);
+
+		projected_triangle.color = shaded_color;
 		projected_triangle.average_depth = (float)((transformed_vertices[0].z + transformed_vertices[1].z + transformed_vertices[2].z) / 3);
 		
 		// save the projected triangle in the array of triangles to render
