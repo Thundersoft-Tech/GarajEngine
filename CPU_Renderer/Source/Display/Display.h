@@ -25,6 +25,7 @@ extern SDL_WindowFlags window_flag;
 bool setup_sdl();
 bool setup_color_buffer();
 void draw_pixel(int x, int y, uint32_t* color);
+void draw_pixel(int x, int y, uint32_t color);
 void draw_grid(int multiple, uint32_t* color);
 void render_color_buffer();
 void clear_color_buffer(uint32_t* color);

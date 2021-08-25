@@ -65,7 +65,7 @@ void process_input() {
 }
 
 void projection(int count = 0) {
-	mesh.rotation.x += 0.01;
+	//mesh.rotation.x += 0.01;
 	//mesh.rotation.y += 0.01;
 	//mesh.rotation.z += 0.01;
 
@@ -249,8 +249,8 @@ void draw_textured_triangles() {
 		triangle_t triangle = triangles_to_render[i];
 		draw_textured_triangle(
 			triangle.points[0].x, triangle.points[0].y, triangle.texcoords[0].u, triangle.texcoords[0].v,
-			triangle.points[1].x, triangle.points[1].y, triangle.texcoords[1].u, triangle.texcoords[0].v,
-			triangle.points[2].x, triangle.points[2].y, triangle.texcoords[2].u, triangle.texcoords[0].v,
+			triangle.points[1].x, triangle.points[1].y, triangle.texcoords[1].u, triangle.texcoords[1].v,
+			triangle.points[2].x, triangle.points[2].y, triangle.texcoords[2].u, triangle.texcoords[2].v,
 			mesh_texture
 		);
 		if (render_mode == TEXTURED_OUTLINE) {
