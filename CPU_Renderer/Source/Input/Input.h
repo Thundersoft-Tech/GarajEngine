@@ -3,7 +3,7 @@
 
 #include "SDL.h"
 
-enum render_modes { WIREFRAME, VERTEX, FILLED, FILLED_OUTLINE };
+enum render_modes { WIREFRAME, VERTEX, FILLED, FILLED_OUTLINE, TEXTURED, TEXTURED_OUTLINE };
 enum culling_modes { BACK_FACE_CULLING, FRONT_FACE_CULLING, CULLING_DISABLED };
 extern render_modes render_mode;
 extern culling_modes culling;

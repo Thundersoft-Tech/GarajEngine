@@ -26,8 +26,11 @@ void setup() {
 	float z_near = 0.1;
 	float z_far = 100.0;
 	proj_matrix = mat4_make_perspective(fov, aspect, z_near, z_far);
-	//load_cube_mesh_data();
-	is_running = load_obj_file("./Assets/Models/Plane/F22.obj");
+
+	mesh_texture = (uint32_t*)REDBRICK_TEXTURE;
+
+	load_cube_mesh_data();
+	//is_running = load_obj_file("./Assets/Models/Plane/F22.obj");
 }
 
 void process_input() {
@@ -62,7 +65,7 @@ void process_input() {
 }
 
 void projection(int count = 0) {
-	//mesh.rotation.x += 0.01;
+	mesh.rotation.x += 0.01;
 	//mesh.rotation.y += 0.01;
 	//mesh.rotation.z += 0.01;
 
@@ -155,6 +158,11 @@ void projection(int count = 0) {
 			
 			projected_triangle.points[j] = vec2_from_vec4(projected_point);
 		}
+
+		projected_triangle.texcoords[0] = mesh_face.a_uv;
+		projected_triangle.texcoords[1] = mesh_face.b_uv;
+		projected_triangle.texcoords[2] = mesh_face.c_uv;
+		
 		vec3_normalize(&light.direction);
 		float percentage_factor = -vec3_dot(normal_vector, light.direction);
 		uint32_t shaded_color = face_color;
@@ -216,7 +224,7 @@ void draw_wireframe() {
 	}
 }
 
-void draw_triangles() {
+void draw_filled_triangles() {
 	for (int i = 0; i < triangles_to_render.size(); i++) {
 		triangle_t triangle = triangles_to_render[i];
 		draw_filled_triangle(
@@ -236,9 +244,31 @@ void draw_triangles() {
 	}
 }
 
+void draw_textured_triangles() {
+	for (int i = 0; i < triangles_to_render.size(); i++) {
+		triangle_t triangle = triangles_to_render[i];
+		draw_textured_triangle(
+			triangle.points[0].x, triangle.points[0].y, triangle.texcoords[0].u, triangle.texcoords[0].v,
+			triangle.points[1].x, triangle.points[1].y, triangle.texcoords[1].u, triangle.texcoords[0].v,
+			triangle.points[2].x, triangle.points[2].y, triangle.texcoords[2].u, triangle.texcoords[0].v,
+			mesh_texture
+		);
+		if (render_mode == TEXTURED_OUTLINE) {
+			draw_triangle(
+				triangle.points[0].x, triangle.points[0].y,
+				triangle.points[1].x, triangle.points[1].y,
+				triangle.points[2].x, triangle.points[2].y,
+				&BLACK
+			);
+		}
+	}
+}
+
 void draw_mesh() {
 	if (render_mode == FILLED_OUTLINE || render_mode == FILLED)
-		draw_triangles();
+		draw_filled_triangles();
+	if (render_mode == TEXTURED_OUTLINE || render_mode == TEXTURED)
+		draw_textured_triangles();
 	if (render_mode == WIREFRAME || render_mode == VERTEX)
 		draw_wireframe();
 }

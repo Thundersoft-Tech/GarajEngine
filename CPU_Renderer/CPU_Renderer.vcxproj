@@ -182,6 +182,8 @@
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Matrix\Matrix.cpp" />
     <ClCompile Include="Source\Mesh\Mesh.cpp" />
+    <ClCompile Include="Source\Swap\Swap.cpp" />
+    <ClCompile Include="Source\Texture\Texture.cpp" />
     <ClCompile Include="Source\Triangle\Triangle.cpp" />
     <ClCompile Include="Source\Vector\Vector.cpp" />
   </ItemGroup>
@@ -192,6 +194,8 @@
     <ClInclude Include="Source\Light\Light.h" />
     <ClInclude Include="Source\Matrix\Matrix.h" />
     <ClInclude Include="Source\Mesh\Mesh.h" />
+    <ClInclude Include="Source\Swap\Swap.h" />
+    <ClInclude Include="Source\Texture\Texture.h" />
     <ClInclude Include="Source\Triangle\Triangle.h" />
     <ClInclude Include="Source\Vector\Vector.h" />
   </ItemGroup>

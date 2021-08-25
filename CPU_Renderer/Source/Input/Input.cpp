@@ -19,6 +19,10 @@ void keyboard_key_up(SDL_KeyboardEvent key) {
 		render_mode = FILLED;
 	if (key.keysym.sym == SDLK_4)
 		render_mode = FILLED_OUTLINE;
+	if (key.keysym.sym == SDLK_5)
+		render_mode = TEXTURED;
+	if (key.keysym.sym == SDLK_6)
+		render_mode = TEXTURED_OUTLINE;
 	if (key.keysym.sym == SDLK_b)
 		culling = BACK_FACE_CULLING;
 	if (key.keysym.sym == SDLK_f)
