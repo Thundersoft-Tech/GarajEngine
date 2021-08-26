@@ -175,7 +175,7 @@ void draw_textured_triangle(
 		inv_slope_2 = (float)(x2 - x0) / (float)abs((y2 - y0));
 
 	if (y1 - y0 != 0) {
-		for (int y = y0; y <= y1; y++) {
+		for (int y = y0; y < y1; y++) {
 			int x_start = x1 + (y - y1) * inv_slope_1;
 			int x_end = x0 + (y - y0) * inv_slope_2;
 
@@ -206,7 +206,7 @@ void draw_textured_triangle(
 		inv_slope_2 = (float)(x2 - x0) / (float)abs((y2 - y0));
 
 	if (y2 - y1 != 0) {
-		for (int y = y1; y <= y2; y++) {
+		for (int y = y1; y < y2; y++) {
 			int x_start = x1 + (y - y1) * inv_slope_1;
 			int x_end = x0 + (y - y0) * inv_slope_2;
 
