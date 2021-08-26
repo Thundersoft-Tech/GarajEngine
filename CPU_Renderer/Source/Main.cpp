@@ -66,7 +66,7 @@ void process_input() {
 
 void projection(int count = 0) {
 	//mesh.rotation.x += 0.01;
-	//mesh.rotation.y += 0.01;
+	mesh.rotation.y += 0.01;
 	//mesh.rotation.z += 0.01;
 
 	//mesh.scale.x += 0.002;
@@ -156,7 +156,7 @@ void projection(int count = 0) {
 			projected_point.x += (window_width / 2.0);
 			projected_point.y += (window_height / 2.0);
 			
-			projected_triangle.points[j] = vec2_from_vec4(projected_point);
+			projected_triangle.points[j] = projected_point;
 		}
 
 		projected_triangle.texcoords[0] = mesh_face.a_uv;
@@ -248,9 +248,9 @@ void draw_textured_triangles() {
 	for (int i = 0; i < triangles_to_render.size(); i++) {
 		triangle_t triangle = triangles_to_render[i];
 		draw_textured_triangle(
-			triangle.points[0].x, triangle.points[0].y, triangle.texcoords[0].u, triangle.texcoords[0].v,
-			triangle.points[1].x, triangle.points[1].y, triangle.texcoords[1].u, triangle.texcoords[1].v,
-			triangle.points[2].x, triangle.points[2].y, triangle.texcoords[2].u, triangle.texcoords[2].v,
+			triangle.points[0].x, triangle.points[0].y, triangle.points[0].z, triangle.points[0].w, triangle.texcoords[0].u, triangle.texcoords[0].v,
+			triangle.points[1].x, triangle.points[1].y, triangle.points[1].z, triangle.points[1].w, triangle.texcoords[1].u, triangle.texcoords[1].v,
+			triangle.points[2].x, triangle.points[2].y, triangle.points[2].z, triangle.points[2].w, triangle.texcoords[2].u, triangle.texcoords[2].v,
 			mesh_texture
 		);
 		if (render_mode == TEXTURED_OUTLINE) {
