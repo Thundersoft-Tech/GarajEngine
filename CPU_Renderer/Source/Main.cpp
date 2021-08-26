@@ -66,7 +66,7 @@ void process_input() {
 
 void projection(int count = 0) {
 	//mesh.rotation.x += 0.01;
-	mesh.rotation.y += 0.01;
+	//mesh.rotation.y += 0.01;
 	//mesh.rotation.z += 0.01;
 
 	//mesh.scale.x += 0.002;
@@ -258,7 +258,7 @@ void draw_textured_triangles() {
 				triangle.points[0].x, triangle.points[0].y,
 				triangle.points[1].x, triangle.points[1].y,
 				triangle.points[2].x, triangle.points[2].y,
-				&BLACK
+				&WHITE
 			);
 		}
 	}

@@ -86,7 +86,9 @@ vec3_t barycentric_weights(vec2_t a, vec2_t b, vec2_t c, vec2_t p) {
 
 //	Draw textured pixel at position x and y of the screen
 void draw_texel(int x, int y, uint32_t* texture, vec4_t point_a,
-	vec4_t point_b, vec4_t point_c, float u0, float v0, float u1, float v1,
+	vec4_t point_b, vec4_t point_c,
+	float a_w_reciprocal, float b_w_reciprocal, float c_w_reciprocal,
+	float u0, float v0, float u1, float v1,
 	float u2, float v2) {
 	
 	vec2_t point_p = { x, y };
@@ -110,17 +112,16 @@ void draw_texel(int x, int y, uint32_t* texture, vec4_t point_a,
 	interpolated_v = ((v0 / point_a.w) * alpha) + ((v1 / point_b.w) * beta) + ((v2 / point_c.w) * gamma);
 
 	// also interpolate the values of 1/w for the current pixel
-	interpolated_reciprocal_w = ((1/point_a.w) * alpha) + ((1 / point_b.w) * beta) + ((1 / point_c.w) * gamma);
-
+	interpolated_reciprocal_w = (a_w_reciprocal * alpha) + (b_w_reciprocal * beta) + (c_w_reciprocal * gamma);
 	// now divide both of those interpolated U and V values by 1/w
+	
 	interpolated_u /= interpolated_reciprocal_w;
 	interpolated_v /= interpolated_reciprocal_w;
 
 	int tex_x = abs((int)(interpolated_u * texture_width));
 	int tex_y = abs((int)(interpolated_v * texture_height));
 
-	uint32_t color = texture[(texture_width * tex_y) + tex_x];
-	draw_pixel(x, y, color);
+	draw_pixel(x, y, texture[(texture_width * tex_y) + tex_x]);
 }
 
 void draw_textured_triangle(
@@ -164,6 +165,10 @@ void draw_textured_triangle(
 	float inv_slope_1 = 0;
 	float inv_slope_2 = 0;
 
+	float a_w_reciprocal = 1 / point_a.w;
+	float b_w_reciprocal = 1 / point_b.w;
+	float c_w_reciprocal = 1 / point_c.w;
+
 	if (y1 - y0 != 0)
 		inv_slope_1 = (float)(x1 - x0) / (float)abs((y1 - y0));
 	if (y2 - y0 != 0)
@@ -179,11 +184,14 @@ void draw_textured_triangle(
 
 			for (int x = x_start; x <= x_end; x++) {
 				//draw_pixel(x, y, &ORANGE);
+				
 				draw_texel(
 					x, y, texture,
 					point_a, point_b, point_c,
+					a_w_reciprocal, b_w_reciprocal, c_w_reciprocal,
 					u0, v0, u1, v1, u2, v2
 				);
+				
 			}
 		}
 	}
@@ -207,11 +215,14 @@ void draw_textured_triangle(
 
 			for (int x = x_start; x <= x_end; x++) {
 				//draw_pixel(x, y, &ORANGE);
+				
 				draw_texel(
 					x, y, texture,
 					point_a, point_b, point_c,
+					a_w_reciprocal, b_w_reciprocal, c_w_reciprocal,
 					u0, v0, u1, v1, u2, v2
 				);
+				
 			}
 		}
 	}

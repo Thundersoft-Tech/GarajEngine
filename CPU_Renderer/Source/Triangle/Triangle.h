@@ -36,6 +36,7 @@ void draw_textured_triangle(
 void draw_texel(
 	int x, int y, uint32_t* texture,
 	vec4_t point_a, vec4_t point_b, vec4_t point_c,
+	float a_w_reciprocal, float b_w_reciprocal, float c_w_reciprocal,
 	float u0, float v0, float u1, float v1,
 	float u2, float v2
 );
