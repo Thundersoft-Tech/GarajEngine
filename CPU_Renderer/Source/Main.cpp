@@ -1,10 +1,11 @@
+#include <vector>
+#include <math.h>
 #include "Colors/Colors.h"
 #include "Display/Display.h"
 #include "Input/Input.h"
 #include "Vector/Vector.h"
 #include "Mesh/Mesh.h"
-#include <vector>
-#include <math.h>
+#include "upng/upng.h"
 #include "Matrix/Matrix.h"
 #include "Light/Light.h"
 
@@ -27,10 +28,14 @@ void setup() {
 	float z_far = 100.0;
 	proj_matrix = mat4_make_perspective(fov, aspect, z_near, z_far);
 
-	mesh_texture = (uint32_t*)REDBRICK_TEXTURE;
+	//mesh_texture = (uint32_t*)REDBRICK_TEXTURE;
 
 	load_cube_mesh_data();
 	//is_running = load_obj_file("./Assets/Models/Plane/F22.obj");
+
+	std::string file_name = "./Assets/Models/Cube/Cube.png";
+
+	load_png_texture_data(file_name.c_str());
 }
 
 void process_input() {
@@ -66,7 +71,7 @@ void process_input() {
 
 void projection(int count = 0) {
 	//mesh.rotation.x += 0.01;
-	//mesh.rotation.y += 0.01;
+	mesh.rotation.y += 0.01;
 	//mesh.rotation.z += 0.01;
 
 	//mesh.scale.x += 0.002;
@@ -284,6 +289,8 @@ void render() {
 void destroy() {
 	destroy_display();
 	destroy_mesh();
+	if (png_texture != NULL)
+		upng_free(png_texture);
 }
 
 int main() {

@@ -52,7 +52,7 @@ bool setup_color_buffer() {
 	}
 	color_buffer_texture = SDL_CreateTexture(
 		renderer,
-		SDL_PIXELFORMAT_ARGB8888,
+		SDL_PIXELFORMAT_RGBA32,
 		SDL_TEXTUREACCESS_STREAMING,
 		window_width,
 		window_height
@@ -105,7 +105,23 @@ void clear_color_buffer(uint32_t* color) {
 	}
 }
 
+void clear_color_buffer(uint32_t color) {
+	for (int y = 0; y < window_height; y++) {
+		for (int x = 0; x < window_width; x++) {
+			draw_pixel(x, y, color);
+		}
+	}
+}
+
 void draw_rectangle(int x, int y, int w, int h, uint32_t* color) {
+	for (int i = y; i < y + h; i++) {
+		for (int j = x; j < x + w; j++) {
+			draw_pixel(j - (w/2), i - (h/2), color);
+		}
+	}
+}
+
+void draw_rectangle(int x, int y, int w, int h, uint32_t color) {
 	for (int i = y; i < y + h; i++) {
 		for (int j = x; j < x + w; j++) {
 			draw_pixel(j - (w/2), i - (h/2), color);
@@ -119,7 +135,34 @@ void draw_triangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t* col
 	draw_line(x2, y2, x0, y0, color);
 }
 
+
+void draw_triangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t color) {
+	draw_line(x0, y0, x1, y1, color);
+	draw_line(x1, y1, x2, y2, color);
+	draw_line(x2, y2, x0, y0, color);
+}
+
 void draw_line(int x0, int y0, int x1, int y1, uint32_t* color) {
+	int delta_x = (x1 - x0);
+	int delta_y = (y1 - y0);
+
+	int side_length = abs(delta_x) >= abs(delta_y) ? abs(delta_x) : abs(delta_y);
+
+	float x_inc = delta_x / (float)side_length;
+	float y_inc = delta_y / (float)side_length;
+
+	float x = x0;
+	float y = y0;
+
+	for (int i = 0; i < side_length; i++) {
+		draw_pixel(x, y, color);
+		x += x_inc;
+		y += y_inc;
+	}
+}
+
+
+void draw_line(int x0, int y0, int x1, int y1, uint32_t color) {
 	int delta_x = (x1 - x0);
 	int delta_y = (y1 - y0);
 

@@ -185,6 +185,7 @@
     <ClCompile Include="Source\Swap\Swap.cpp" />
     <ClCompile Include="Source\Texture\Texture.cpp" />
     <ClCompile Include="Source\Triangle\Triangle.cpp" />
+    <ClCompile Include="Source\uPng\upng.cpp" />
     <ClCompile Include="Source\Vector\Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -197,6 +198,7 @@
     <ClInclude Include="Source\Swap\Swap.h" />
     <ClInclude Include="Source\Texture\Texture.h" />
     <ClInclude Include="Source\Triangle\Triangle.h" />
+    <ClInclude Include="Source\upng\upng.h" />
     <ClInclude Include="Source\Vector\Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
