@@ -50,61 +50,47 @@ void destroy_mesh() {
 }
 
 bool load_obj_file(std::string file_name) {
-	std::ifstream obj_file;
-	//obj_file.open(file_name, std::ios::in);
-	obj_file.open(file_name);
-	if (!obj_file) {
-		std::cout << "loading " << file_name << " failed.\n";
-		return false;
-	}
-	else {
-		face_t face;
-		vec3_t vertex;
-		while (obj_file) {
-			std::string line;
-			std::getline(obj_file, line);
-			if (line[0] == 'f' && line[1] == ' ') {
-				std::stringstream line_stream(line);
-				std::string portion;
-				face_t face;
-				// f 1/1/1 5/2/1 7/3/1 3/4/1
-				std::vector<int> face_values;
-				int i = 0;
-				while (std::getline(line_stream, portion, ' ')) {
-					if (i > 0) {
-						std::stringstream portion_stream(portion);
-						std::string value;
-						while (std::getline(portion_stream, value, '/')) {
-							face_values.push_back(std::stoi(value));
-							break;
-						}
-					}
-					i += 1;
-				}
-				face.a = face_values[0];
-				face.b = face_values[1];
-				face.c = face_values[2];
-				face.color = WHITE;
-				mesh.faces.push_back(face);
-			}
-			if (line[0] == 'v' && line[1] == ' ') {
-				std::stringstream line_stream(line);
-				std::string portion;
-				int i = 0;
-				while (std::getline(line_stream, portion, ' ')) {
-					if (i == 1)
-						vertex.x = std::stof(portion);
-					if (i == 2)
-						vertex.y = std::stof(portion);
-					if (i == 3)
-						vertex.z = std::stof(portion);
-					i += 1;
-				}
-				mesh.vertices.push_back(vertex);
-			}
+	FILE* file;
+	fopen_s(&file, file_name.c_str(), "r");
+	char line[1024];
+
+	std::vector<tex2_t> texcoords;
+
+	while (fgets(line, 1024, file)) {
+		// Vertex information
+		if (strncmp(line, "v ", 2) == 0) {
+			vec3_t vertex;
+			sscanf_s(line, "v %f %f %f", &vertex.x, &vertex.y, &vertex.z);
+			mesh.vertices.push_back(vertex);
+		}
+		// Texture coordinate information
+		if (strncmp(line, "vt ", 3) == 0) {
+			tex2_t texcoord;
+			sscanf_s(line, "vt %f %f", &texcoord.u, &texcoord.v);
+			texcoords.push_back(texcoord);
+		}
+		// Face information
+		if (strncmp(line, "f ", 2) == 0) {
+			int vertex_indices[3];
+			int texture_indices[3];
+			int normal_indices[3];
+			sscanf_s(
+				line, "f %d/%d/%d %d/%d/%d %d/%d/%d",
+				&vertex_indices[0], &texture_indices[0], &normal_indices[0],
+				&vertex_indices[1], &texture_indices[1], &normal_indices[1],
+				&vertex_indices[2], &texture_indices[2], &normal_indices[2]
+			);
+			face_t face = {
+				vertex_indices[0],
+				vertex_indices[1],
+				vertex_indices[2],
+				texcoords[texture_indices[0] - 1],
+				texcoords[texture_indices[1] - 1],
+				texcoords[texture_indices[2] - 1],
+				0xFFFFFFFF
+			};
+			mesh.faces.push_back(face);
 		}
 	}
-	obj_file.close();
-	mesh.scale = { 1, 1, 1 };
 	return true;
 }
