@@ -89,7 +89,6 @@ bool load_obj_file(std::string file_name) {
 				texcoords[texture_indices[2] - 1],
 				WHITE
 			};
-			std::cout << "u = " << face.a_uv.u << ", v = " << face.a_uv.v << std::endl;
 			mesh.faces.push_back(face);
 		}
 	}
