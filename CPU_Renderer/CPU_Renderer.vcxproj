@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -175,7 +175,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Colors\Colors.cpp" />
+    <ClCompile Include="Source\Display\Display.cpp" />
+    <ClCompile Include="Source\Input\Input.cpp" />
+    <ClCompile Include="Source\Light\Light.cpp" />
     <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\Matrix\Matrix.cpp" />
+    <ClCompile Include="Source\Mesh\Mesh.cpp" />
+    <ClCompile Include="Source\Swap\Swap.cpp" />
+    <ClCompile Include="Source\Texture\Texture.cpp" />
+    <ClCompile Include="Source\Triangle\Triangle.cpp" />
+    <ClCompile Include="Source\uPng\upng.cpp" />
+    <ClCompile Include="Source\Vector\Vector.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Colors\Colors.h" />
+    <ClInclude Include="Source\Display\Display.h" />
+    <ClInclude Include="Source\Input\Input.h" />
+    <ClInclude Include="Source\Light\Light.h" />
+    <ClInclude Include="Source\Matrix\Matrix.h" />
+    <ClInclude Include="Source\Mesh\Mesh.h" />
+    <ClInclude Include="Source\Swap\Swap.h" />
+    <ClInclude Include="Source\Texture\Texture.h" />
+    <ClInclude Include="Source\Triangle\Triangle.h" />
+    <ClInclude Include="Source\upng\upng.h" />
+    <ClInclude Include="Source\Vector\Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
