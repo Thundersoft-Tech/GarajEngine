@@ -30,8 +30,8 @@ void setup() {
 
 	//mesh_texture = (uint32_t*)REDBRICK_TEXTURE;
 
-	load_cube_mesh_data();
-	//is_running = load_obj_file("./Assets/Models/Cube/Cube.obj");
+	//load_cube_mesh_data();
+	is_running = load_obj_file("./Assets/Models/Cube/MyCube.obj");
 
 	std::string file_name = "./Assets/Models/Cube/Cube.png";
 

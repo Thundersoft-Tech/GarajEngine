@@ -52,11 +52,11 @@ void destroy_mesh() {
 bool load_obj_file(std::string file_name) {
 	FILE* file;
 	fopen_s(&file, file_name.c_str(), "r");
-	char line[1024];
+	char line[2048];
 
 	std::vector<tex2_t> texcoords;
 
-	while (fgets(line, 1024, file)) {
+	while (fgets(line, 2048, file)) {
 		// Vertex information
 		if (strncmp(line, "v ", 2) == 0) {
 			vec3_t vertex;
@@ -87,10 +87,12 @@ bool load_obj_file(std::string file_name) {
 				texcoords[texture_indices[0] - 1],
 				texcoords[texture_indices[1] - 1],
 				texcoords[texture_indices[2] - 1],
-				0xFFFFFFFF
+				WHITE
 			};
+			std::cout << "u = " << face.a_uv.u << ", v = " << face.a_uv.v << std::endl;
 			mesh.faces.push_back(face);
 		}
 	}
+	mesh.scale = { 1, 1, 1 };
 	return true;
 }
