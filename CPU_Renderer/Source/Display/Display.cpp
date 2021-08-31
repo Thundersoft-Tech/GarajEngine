@@ -3,6 +3,7 @@
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 uint32_t* color_buffer = NULL;
+float* z_buffer = NULL;
 SDL_Texture* color_buffer_texture = NULL;
 int window_width = 800;
 int window_height = 600;
@@ -46,6 +47,11 @@ bool setup_sdl() {
 
 bool setup_color_buffer() {
 	color_buffer = (uint32_t*)malloc(sizeof(uint32_t) * window_width * window_height);
+	z_buffer = (float*)malloc(sizeof(float) * window_width * window_height);
+	if (!z_buffer) {
+		std::cout << "Failed to allocate memory for the z buffer." << std::endl;
+		return false;
+	}
 	if (!color_buffer) {
 		std::cout << "Failed to allocate memory for the color buffer." << std::endl;
 		return false;
@@ -109,6 +115,14 @@ void clear_color_buffer(uint32_t color) {
 	for (int y = 0; y < window_height; y++) {
 		for (int x = 0; x < window_width; x++) {
 			draw_pixel(x, y, color);
+		}
+	}
+}
+
+void clear_z_buffer() {
+	for (int y = 0; y < window_height; y++) {
+		for (int x = 0; x < window_width; x++) {
+			z_buffer[(window_width * y) + x] = 1.0;
 		}
 	}
 }
@@ -183,6 +197,7 @@ void draw_line(int x0, int y0, int x1, int y1, uint32_t color) {
 
 void destroy_display() {
 	free(color_buffer);
+	free(z_buffer);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();

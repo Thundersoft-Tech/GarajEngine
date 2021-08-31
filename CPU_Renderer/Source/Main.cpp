@@ -31,9 +31,9 @@ void setup() {
 	//mesh_texture = (uint32_t*)REDBRICK_TEXTURE;
 
 	//load_cube_mesh_data();
-	is_running = load_obj_file("./Assets/Models/Cube/MyCube.obj");
+	is_running = load_obj_file("./Assets/Models/Others/f22.obj");
 
-	std::string file_name = "./Assets/Models/Cube/Cube.png";
+	std::string file_name = "./Assets/Models/Others/f22.png";
 
 	load_png_texture_data(file_name.c_str());
 }
@@ -70,15 +70,15 @@ void process_input() {
 }
 
 void projection(int count = 0) {
-	//mesh.rotation.x += 0.01;
-	mesh.rotation.y += 0.01;
+	mesh.rotation.x += 0.02;
+	//mesh.rotation.y += 0.05;
 	//mesh.rotation.z += 0.01;
 
 	//mesh.scale.x += 0.002;
 	//mesh.scale.y += 0.001;
 
-	//mesh.translation.x += 0.01;
-	mesh.translation.z = 4.0; // move away from the camera
+	//mesh.translation.y = -1.5;
+	mesh.translation.z = 4.5; // move away from the camera
 
 	mat4_t translation_matrix = mat4_make_translation(mesh.translation.x, mesh.translation.y, mesh.translation.z);
 	mat4_t rotation_matrix_x = mat4_make_rotation_x(mesh.rotation.x);
@@ -175,26 +175,10 @@ void projection(int count = 0) {
 		shaded_color = apply_light_intensity(shaded_color, percentage_factor);
 
 		projected_triangle.color = shaded_color;
-		projected_triangle.average_depth = (float)((transformed_vertices[0].z + transformed_vertices[1].z + transformed_vertices[2].z) / 3);
 		
 		// save the projected triangle in the array of triangles to render
 		triangles_to_render.push_back(projected_triangle);
 	}
-
-	// Sort triangles based on depth
-	bool swapped = false;
-	do
-	{
-		swapped = false;
-		for (int i = 1; i < triangles_to_render.size(); i++) {
-			if (triangles_to_render[i - 1].average_depth < triangles_to_render[i].average_depth) {
-				triangle_t tmp = triangles_to_render[i - 1];
-				triangles_to_render[i - 1] = triangles_to_render[i];
-				triangles_to_render[i] = tmp;
-				swapped = true;
-			}
-		}
-	} while (swapped);
 }
 
 void update() {
@@ -229,26 +213,6 @@ void draw_wireframe() {
 	}
 }
 
-void draw_filled_triangles() {
-	for (int i = 0; i < triangles_to_render.size(); i++) {
-		triangle_t triangle = triangles_to_render[i];
-		draw_filled_triangle(
-			triangle.points[0].x, triangle.points[0].y,
-			triangle.points[1].x, triangle.points[1].y,
-			triangle.points[2].x, triangle.points[2].y,
-			triangle.color
-		);
-		if (render_mode == FILLED_OUTLINE) {
-			draw_triangle(
-				triangle.points[0].x, triangle.points[0].y,
-				triangle.points[1].x, triangle.points[1].y,
-				triangle.points[2].x, triangle.points[2].y,
-				&BLACK
-			);
-		}
-	}
-}
-
 void draw_textured_triangles() {
 	for (int i = 0; i < triangles_to_render.size(); i++) {
 		triangle_t triangle = triangles_to_render[i];
@@ -263,7 +227,27 @@ void draw_textured_triangles() {
 				triangle.points[0].x, triangle.points[0].y,
 				triangle.points[1].x, triangle.points[1].y,
 				triangle.points[2].x, triangle.points[2].y,
-				&WHITE
+				&BLACK
+			);
+		}
+	}
+}
+
+void draw_filled_triangles() {
+	for (int i = 0; i < triangles_to_render.size(); i++) {
+		triangle_t triangle = triangles_to_render[i];
+		draw_filled_triangle(
+			triangle.points[0].x, triangle.points[0].y, triangle.points[0].z, triangle.points[0].w,
+			triangle.points[1].x, triangle.points[1].y, triangle.points[1].z, triangle.points[1].w,
+			triangle.points[2].x, triangle.points[2].y, triangle.points[2].z, triangle.points[2].w,
+			triangle.color
+		);
+		if (render_mode == FILLED_OUTLINE) {
+			draw_triangle(
+				triangle.points[0].x, triangle.points[0].y,
+				triangle.points[1].x, triangle.points[1].y,
+				triangle.points[2].x, triangle.points[2].y,
+				&BLACK
 			);
 		}
 	}
@@ -273,7 +257,13 @@ void draw_mesh() {
 	if (render_mode == FILLED_OUTLINE || render_mode == FILLED)
 		draw_filled_triangles();
 	if (render_mode == TEXTURED_OUTLINE || render_mode == TEXTURED)
-		draw_textured_triangles();
+		if (mesh_texture == NULL) {
+			draw_filled_triangles();
+		}
+		else
+		{
+			draw_textured_triangles();
+		}
 	if (render_mode == WIREFRAME || render_mode == VERTEX)
 		draw_wireframe();
 }
@@ -282,7 +272,7 @@ void render() {
 	draw_mesh();
 	render_color_buffer();
 	clear_color_buffer(&DARK_GRAY);
-
+	clear_z_buffer();
 	SDL_RenderPresent(renderer);
 }
 

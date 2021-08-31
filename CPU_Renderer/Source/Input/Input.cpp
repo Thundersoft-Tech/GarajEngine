@@ -3,7 +3,7 @@
 #include "../Display/Display.h"
 #include "../Colors/Colors.h"
 
-render_modes render_mode = FILLED_OUTLINE;
+render_modes render_mode = TEXTURED;
 culling_modes culling = BACK_FACE_CULLING;
 
 void keyboard_key_down(SDL_KeyboardEvent key) {
