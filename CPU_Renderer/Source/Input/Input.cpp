@@ -27,7 +27,7 @@ void keyboard_key_up(SDL_KeyboardEvent key) {
 		culling = BACK_FACE_CULLING;
 	if (key.keysym.sym == SDLK_f)
 		culling = FRONT_FACE_CULLING;
-	if (key.keysym.sym == SDLK_d)
+	if (key.keysym.sym == SDLK_x)
 		culling = CULLING_DISABLED;
 }
 
