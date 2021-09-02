@@ -19,7 +19,7 @@ mat4_t proj_matrix;
 mat4_t world_matrix;
 mat4_t view_matrix;
 int previous_frame_time;
-
+float delta_time;
 bool is_running = false;
 
 void setup() {
@@ -72,22 +72,22 @@ void process_input() {
 }
 
 void projection(int count = 0) {
-	//mesh.rotation.x += 0.02;
-	//mesh.rotation.y += 0.05;
-	//mesh.rotation.z += 0.01;
+	mesh.rotation.x += 0.6 * delta_time;
+	//mesh.rotation.y += 0.6 * delta_time;
+	//mesh.rotation.z += 0.6 * delta_time;
 
-	//mesh.scale.x += 0.002;
-	//mesh.scale.y += 0.001;
+	//mesh.scale.x += 0.002 * delta_time;
+	//mesh.scale.y += 0.001 * delta_time;
 
 	//mesh.translation.y = -1.5;
 	mesh.translation.z = 4.5; // move away from the camera
 
 	// change camera_position per frame
-	camera.position.x += 0.008;
-	camera.position.y += 0.008;
+	camera.position.x += 0.0 * delta_time;
+	camera.position.y += 0.0 * delta_time;
 
 	// create view matrix
-	vec3_t target = { 0, 0, 4.0 };
+	vec3_t target = { 0, 0, 4.5 };
 	vec3_t up_direction = { 0, 1,0 };
 	view_matrix = mat4_look_at(camera.position, target, up_direction);
 
@@ -203,6 +203,8 @@ void update() {
 	if (time_to_wait > 0 && time_to_wait <= FRAME_TARGET_TIME) {
 		SDL_Delay(time_to_wait);
 	}
+
+	delta_time = (SDL_GetTicks() - previous_frame_time) / 1000.0;
 
 	previous_frame_time = SDL_GetTicks();
 

@@ -9,7 +9,7 @@
 #include <SDL_mixer.h>
 #undef main
 
-#define FPS 30
+#define FPS 120
 #define FRAME_TARGET_TIME (1000 / FPS)
 
 extern SDL_Window* window;
