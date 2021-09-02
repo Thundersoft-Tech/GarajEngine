@@ -8,14 +8,16 @@
 #include "upng/upng.h"
 #include "Matrix/Matrix.h"
 #include "Light/Light.h"
+#include "Camera/Camera.h"
 
-std::vector<triangle_t> triangles_to_render;
-
-vec3_t camera_position = { 0, 0, 0 };
+#define MAX_TRIANGLES 10000
+triangle_t triangles_to_render[MAX_TRIANGLES];
+int number_of_triangles = 0;
 
 //float fov_factor = 640;
 mat4_t proj_matrix;
-
+mat4_t world_matrix;
+mat4_t view_matrix;
 int previous_frame_time;
 
 bool is_running = false;
@@ -70,7 +72,7 @@ void process_input() {
 }
 
 void projection(int count = 0) {
-	mesh.rotation.x += 0.02;
+	//mesh.rotation.x += 0.02;
 	//mesh.rotation.y += 0.05;
 	//mesh.rotation.z += 0.01;
 
@@ -80,6 +82,15 @@ void projection(int count = 0) {
 	//mesh.translation.y = -1.5;
 	mesh.translation.z = 4.5; // move away from the camera
 
+	// change camera_position per frame
+	camera.position.x += 0.008;
+	camera.position.y += 0.008;
+
+	// create view matrix
+	vec3_t target = { 0, 0, 4.0 };
+	vec3_t up_direction = { 0, 1,0 };
+	view_matrix = mat4_look_at(camera.position, target, up_direction);
+
 	mat4_t translation_matrix = mat4_make_translation(mesh.translation.x, mesh.translation.y, mesh.translation.z);
 	mat4_t rotation_matrix_x = mat4_make_rotation_x(mesh.rotation.x);
 	mat4_t rotation_matrix_y = mat4_make_rotation_y(mesh.rotation.y);
@@ -87,7 +98,7 @@ void projection(int count = 0) {
 	mat4_t scale_matrix = mat4_make_scale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
 
 
-	mat4_t world_matrix = mat4_identity();
+	world_matrix = mat4_identity();
 	world_matrix = mat4_mul_mat4(scale_matrix, world_matrix);
 	world_matrix = mat4_mul_mat4(rotation_matrix_x, world_matrix);
 	world_matrix = mat4_mul_mat4(rotation_matrix_y, world_matrix);
@@ -112,6 +123,9 @@ void projection(int count = 0) {
 			vec4_t transformed_vertex = vec4_from_vec3(face_vertices[j]);
 			transformed_vertex = mat4_mul_vec4(world_matrix, transformed_vertex);
 
+			// multiply the view matrix
+			transformed_vertex = mat4_mul_vec4(view_matrix, transformed_vertex);
+
 			transformed_vertices[j] = transformed_vertex;
 		}
 
@@ -129,8 +143,9 @@ void projection(int count = 0) {
 		vec3_t normal_vector = vec3_cross(vector_ab, vector_ac);
 
 		vec3_normalize(&normal_vector);
-
-		vec3_t camera_ray_vector = vec3_subtract(camera_position, vector_a);
+		
+		vec3_t origin = { 0, 0, 0 };
+		vec3_t camera_ray_vector = vec3_subtract(origin, vector_a);
 
 		float dot_product = vec3_dot(normal_vector, camera_ray_vector);
 
@@ -175,9 +190,11 @@ void projection(int count = 0) {
 		shaded_color = apply_light_intensity(shaded_color, percentage_factor);
 
 		projected_triangle.color = shaded_color;
-		
-		// save the projected triangle in the array of triangles to render
-		triangles_to_render.push_back(projected_triangle);
+		if (number_of_triangles < MAX_TRIANGLES) {
+			// save the projected triangle in the array of triangles to render
+			triangles_to_render[number_of_triangles] = projected_triangle;
+			number_of_triangles += 1;
+		}
 	}
 }
 
@@ -189,13 +206,13 @@ void update() {
 
 	previous_frame_time = SDL_GetTicks();
 
-	triangles_to_render.clear();
+	number_of_triangles = 0;
 
 	projection();
 }
 
 void draw_wireframe() {
-	for (int i = 0; i < triangles_to_render.size(); i++) {
+	for (int i = 0; i < number_of_triangles; i++) {
 		triangle_t triangle = triangles_to_render[i];
 		draw_triangle(
 			triangle.points[0].x, triangle.points[0].y,
@@ -214,7 +231,7 @@ void draw_wireframe() {
 }
 
 void draw_textured_triangles() {
-	for (int i = 0; i < triangles_to_render.size(); i++) {
+	for (int i = 0; i < number_of_triangles; i++) {
 		triangle_t triangle = triangles_to_render[i];
 		draw_textured_triangle(
 			triangle.points[0].x, triangle.points[0].y, triangle.points[0].z, triangle.points[0].w, triangle.texcoords[0].u, triangle.texcoords[0].v,
@@ -234,7 +251,7 @@ void draw_textured_triangles() {
 }
 
 void draw_filled_triangles() {
-	for (int i = 0; i < triangles_to_render.size(); i++) {
+	for (int i = 0; i < number_of_triangles; i++) {
 		triangle_t triangle = triangles_to_render[i];
 		draw_filled_triangle(
 			triangle.points[0].x, triangle.points[0].y, triangle.points[0].z, triangle.points[0].w,
