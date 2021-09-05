@@ -9,6 +9,7 @@
 #include "Matrix/Matrix.h"
 #include "Light/Light.h"
 #include "Camera/Camera.h"
+#include "Clipping/Clipping.h"
 
 #define MAX_TRIANGLES 10000
 triangle_t triangles_to_render[MAX_TRIANGLES];
@@ -29,7 +30,9 @@ void setup() {
 	float z_near = 0.1;
 	float z_far = 100.0;
 	proj_matrix = mat4_make_perspective(fov, aspect, z_near, z_far);
-
+	
+	init_frustum_planes(fov, z_near, z_far);
+	
 	//mesh_texture = (uint32_t*)REDBRICK_TEXTURE;
 
 	//load_cube_mesh_data();
@@ -136,7 +139,7 @@ void projection(int count = 0) {
 		face_vertices[1] = mesh.vertices[mesh_face.b - 1];
 		face_vertices[2] = mesh.vertices[mesh_face.c - 1];
 
-		triangle_t projected_triangle;
+		triangle_t triangle_to_render;
 		vec4_t transformed_vertices[3];
 
 		// loop all 3 vertices of this current face and apply transformations
@@ -180,41 +183,59 @@ void projection(int count = 0) {
 				continue;
 		}
 
-		// loop all vertices and perform projection
-		for (int j = 0; j < 3; j++){
-			// project the current vertex
-			vec4_t projected_point = mat4_mul_vec4_project(proj_matrix, transformed_vertices[j]);// = project(vec3_from_vec4(transformed_vertices[j]));
+		polygon_t polygon = create_polygon_from_triangle(
+			vec3_from_vec4(transformed_vertices[0]),
+			vec3_from_vec4(transformed_vertices[1]),
+			vec3_from_vec4(transformed_vertices[2])
+		);
 
-			// scaling projected point
-
-			projected_point.x *= (window_width / 2.0);
-			projected_point.y *= (window_height / 2.0);
-
-			// invert y values
-			projected_point.y *= -1;
-
-			// translating projected point
-			projected_point.x += (window_width / 2.0);
-			projected_point.y += (window_height / 2.0);
-			
-			projected_triangle.points[j] = projected_point;
-		}
-
-		projected_triangle.texcoords[0] = mesh_face.a_uv;
-		projected_triangle.texcoords[1] = mesh_face.b_uv;
-		projected_triangle.texcoords[2] = mesh_face.c_uv;
+		clip_polygon(&polygon);
 		
-		vec3_normalize(&light.direction);
-		float percentage_factor = -vec3_dot(normal_vector, light.direction);
-		uint32_t shaded_color = face_color;
+		// after clipping convert polygons into triangles
+		
+		triangle_t triangles_after_clipping[MAX_NUM_POLY_TRIANGLES];
+		int num_triangles_after_clipping = 0;
 
-		shaded_color = apply_light_intensity(shaded_color, percentage_factor);
+		triangles_from_polygon(&polygon, triangles_after_clipping, &num_triangles_after_clipping);
 
-		projected_triangle.color = shaded_color;
-		if (number_of_triangles < MAX_TRIANGLES) {
-			// save the projected triangle in the array of triangles to render
-			triangles_to_render[number_of_triangles] = projected_triangle;
-			number_of_triangles += 1;
+		for (int t = 0; t < num_triangles_after_clipping; t++) {
+			triangle_t triangle_after_clipping = triangles_after_clipping[t];
+			// loop all vertices and perform projection
+			for (int j = 0; j < 3; j++){
+				// project the current vertex
+				vec4_t projected_point = mat4_mul_vec4_project(proj_matrix, triangle_after_clipping.points[j]);
+
+				// scaling projected point
+
+				projected_point.x *= (window_width / 2.0);
+				projected_point.y *= (window_height / 2.0);
+
+				// invert y values
+				projected_point.y *= -1;
+
+				// translating projected point
+				projected_point.x += (window_width / 2.0);
+				projected_point.y += (window_height / 2.0);
+			
+				triangle_to_render.points[j] = projected_point;
+			}
+
+			triangle_to_render.texcoords[0] = mesh_face.a_uv;
+			triangle_to_render.texcoords[1] = mesh_face.b_uv;
+			triangle_to_render.texcoords[2] = mesh_face.c_uv;
+		
+			vec3_normalize(&light.direction);
+			float percentage_factor = -vec3_dot(normal_vector, light.direction);
+			uint32_t shaded_color = face_color;
+
+			shaded_color = apply_light_intensity(shaded_color, percentage_factor);
+
+			triangle_to_render.color = shaded_color;
+			if (number_of_triangles < MAX_TRIANGLES) {
+				// save the projected triangle in the array of triangles to render
+				triangles_to_render[number_of_triangles] = triangle_to_render;
+				number_of_triangles += 1;
+			}
 		}
 	}
 }
@@ -246,7 +267,7 @@ void draw_wireframe() {
 		if (render_mode == VERTEX) {
 			for (int j = 0; j < 3; j++) {
 				draw_rectangle(
-					triangle.points[j].x, triangle.points[j].y, 10, 10, &ORANGE
+					triangle.points[j].x, triangle.points[j].y, 3, 3, &ORANGE
 				);
 			}
 		}

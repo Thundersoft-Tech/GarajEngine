@@ -6,6 +6,10 @@
 // 2D Vector functions
 //////////////////////
 
+vec2_t vec2_new(float x, float y) {
+	return { x, y };
+}
+
 vec2_t vec2_rotate(vec2_t v, float angle) {
 	vec2_t rotated_vector = {
 		v.x * cos(angle) - v.y * sin(angle),
@@ -50,9 +54,18 @@ void vec2_normalize(vec2_t* v) {
 	v->y = v->y / v_length;
 }
 
+vec2_t vec2_clone(vec2_t* v) {
+	vec2_t clone_v = { v->x, v->y };
+	return clone_v;
+}
+
 ///////////////////////
 // 3D Vector functions
 //////////////////////
+
+vec3_t vec3_new(float x, float y, float z) {
+	return { x, y, z };
+}
 
 vec3_t vec3_rotate_x(vec3_t v, float angle) {
 	vec3_t rotated_vector = {
@@ -124,6 +137,11 @@ void vec3_normalize(vec3_t* v) {
 	v->x = v->x / v_length;
 	v->y = v->y / v_length;
 	v->z = v->z / v_length;
+}
+
+vec3_t vec3_clone(vec3_t* v) {
+	vec3_t clone_v = { v->x, v->y, v->z };
+	return clone_v;
 }
 
 ////////////////////////////////

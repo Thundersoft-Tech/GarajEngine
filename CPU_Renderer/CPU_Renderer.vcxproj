@@ -176,6 +176,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Camera\Camera.cpp" />
+    <ClCompile Include="Source\Clipping\Clipping.cpp" />
     <ClCompile Include="Source\Colors\Colors.cpp" />
     <ClCompile Include="Source\Display\Display.cpp" />
     <ClCompile Include="Source\Input\Input.cpp" />
@@ -191,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Camera\Camera.h" />
+    <ClInclude Include="Source\Clipping\Clipping.h" />
     <ClInclude Include="Source\Colors\Colors.h" />
     <ClInclude Include="Source\Display\Display.h" />
     <ClInclude Include="Source\Input\Input.h" />
