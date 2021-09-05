@@ -38,9 +38,12 @@ void setup() {
 	//mesh_texture = (uint32_t*)REDBRICK_TEXTURE;
 
 	//load_cube_mesh_data();
-	is_running = load_obj_file("./Assets/Models/Others/f22.obj");
+	// girl obj "./Assets/Models/Anime/girl/girl.obj"
+	// girl png "./Assets/Models/Anime/girl/girl.png"
+	
+	is_running = load_obj_file("./Assets/Models/Anime/girl/girl.obj");
 
-	std::string file_name = "./Assets/Models/Others/f22.png";
+	std::string file_name = "./Assets/Models/Anime/girl/girl.png";
 
 	load_png_texture_data(file_name.c_str());
 }
@@ -94,14 +97,14 @@ void process_input() {
 
 void projection(int count = 0) {
 	//mesh.rotation.x += 0.6 * delta_time;
-	//mesh.rotation.y += 0.6 * delta_time;
+	mesh.rotation.y += 0.6 * delta_time;
 	//mesh.rotation.z += 0.6 * delta_time;
 
 	//mesh.scale.x += 0.002 * delta_time;
 	//mesh.scale.y += 0.001 * delta_time;
 
-	//mesh.translation.y = -1.5;
-	mesh.translation.z = 4.5; // move away from the camera
+	mesh.translation.y = -1.25;
+	mesh.translation.z = 5; // move away from the camera
 
 	// change camera_position per frame
 	camera.position.x += 0.0 * delta_time;
