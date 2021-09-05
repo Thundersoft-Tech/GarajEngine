@@ -65,15 +65,15 @@ void process_input() {
 			camera.position.y += 3.0 * delta_time;
 		if (event.key.keysym.sym == SDLK_DOWN)
 			camera.position.y -= 3.0 * delta_time;
-		if (event.key.keysym.sym == SDLK_d)
-			camera.yaw_angle += 1.0 * delta_time;
-		if (event.key.keysym.sym == SDLK_a)
-			camera.yaw_angle -= 1.0 * delta_time;
-		if (event.key.keysym.sym == SDLK_s)
-			camera.pitch_angle += 1.0 * delta_time;
-		if (event.key.keysym.sym == SDLK_w)
-			camera.pitch_angle -= 1.0 * delta_time;
 		*/
+		if (event.key.keysym.sym == SDLK_RIGHT)
+			camera.yaw_angle += 1.0 * delta_time;
+		if (event.key.keysym.sym == SDLK_LEFT)
+			camera.yaw_angle -= 1.0 * delta_time;
+		if (event.key.keysym.sym == SDLK_DOWN)
+			camera.pitch_angle += 1.0 * delta_time;
+		if (event.key.keysym.sym == SDLK_UP)
+			camera.pitch_angle -= 1.0 * delta_time;
 		if (event.key.keysym.sym == SDLK_w) {
 			camera.forward_velocity = vec3_multiply(camera.direction, 5.0 * delta_time);
 			camera.position = vec3_add(camera.position, camera.forward_velocity);
@@ -94,8 +94,8 @@ void process_input() {
 		break;
 	case SDL_MOUSEMOTION:
 		mouse_motion(event.motion);
-		camera.pitch_angle += 0.2 * delta_time * event.motion.yrel;
-		camera.yaw_angle += 0.2 * delta_time * event.motion.xrel;
+		//camera.pitch_angle += 0.2 * delta_time * event.motion.yrel;
+		//camera.yaw_angle += 0.2 * delta_time * event.motion.xrel;
 		break;
 	case SDL_MOUSEWHEEL:
 		mouse_wheel(event.wheel);
