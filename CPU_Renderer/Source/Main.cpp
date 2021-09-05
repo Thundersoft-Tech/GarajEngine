@@ -60,14 +60,20 @@ void process_input() {
 		if (event.key.keysym.sym == SDLK_ESCAPE)
 			is_running = false;
 		keyboard_key_down(event.key);
+		/*
 		if (event.key.keysym.sym == SDLK_UP)
 			camera.position.y += 3.0 * delta_time;
 		if (event.key.keysym.sym == SDLK_DOWN)
 			camera.position.y -= 3.0 * delta_time;
-		if (event.key.keysym.sym == SDLK_a)
+		*/
+		if (event.key.keysym.sym == SDLK_RIGHT)
 			camera.yaw_angle += 1.0 * delta_time;
-		if (event.key.keysym.sym == SDLK_d)
+		if (event.key.keysym.sym == SDLK_LEFT)
 			camera.yaw_angle -= 1.0 * delta_time;
+		if (event.key.keysym.sym == SDLK_DOWN)
+			camera.pitch_angle += 1.0 * delta_time;
+		if (event.key.keysym.sym == SDLK_UP)
+			camera.pitch_angle -= 1.0 * delta_time;
 		if (event.key.keysym.sym == SDLK_w) {
 			camera.forward_velocity = vec3_multiply(camera.direction, 5.0 * delta_time);
 			camera.position = vec3_add(camera.position, camera.forward_velocity);
@@ -88,6 +94,8 @@ void process_input() {
 		break;
 	case SDL_MOUSEMOTION:
 		mouse_motion(event.motion);
+		//camera.pitch_angle += 0.2 * delta_time * event.motion.yrel;
+		//camera.yaw_angle += 0.2 * delta_time * event.motion.xrel;
 		break;
 	case SDL_MOUSEWHEEL:
 		mouse_wheel(event.wheel);
@@ -111,8 +119,13 @@ void projection(int count = 0) {
 	camera.position.y += 0.0 * delta_time;
 
 	mat4_t camera_yaw_rotation = mat4_make_rotation_y(camera.yaw_angle);
+	mat4_t camera_pitch_rotation = mat4_make_rotation_x(camera.pitch_angle);
+	mat4_t camera_rotation = mat4_identity();
+	camera_rotation = mat4_mul_mat4(camera_pitch_rotation, camera_rotation);
+	camera_rotation = mat4_mul_mat4(camera_yaw_rotation, camera_rotation);
+
 	vec3_t target = { 0, 0, 1 };
-	camera.direction = vec3_from_vec4(mat4_mul_vec4(camera_yaw_rotation, vec4_from_vec3(target)));
+	camera.direction = vec3_from_vec4(mat4_mul_vec4(camera_rotation, vec4_from_vec3(target)));
 	
 	target = vec3_add(camera.position, camera.direction);
 	vec3_t up_direction = { 0, 1,0 };
