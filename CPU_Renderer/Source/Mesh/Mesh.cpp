@@ -52,11 +52,11 @@ void destroy_mesh() {
 bool load_obj_file(std::string file_name) {
 	FILE* file;
 	fopen_s(&file, file_name.c_str(), "r");
-	char line[2048];
+	char line[32768];
 
 	std::vector<tex2_t> texcoords;
 
-	while (fgets(line, 2048, file)) {
+	while (fgets(line, 32768, file)) {
 		// Vertex information
 		if (strncmp(line, "v ", 2) == 0) {
 			vec3_t vertex;
@@ -80,18 +80,24 @@ bool load_obj_file(std::string file_name) {
 				&vertex_indices[1], &texture_indices[1], &normal_indices[1],
 				&vertex_indices[2], &texture_indices[2], &normal_indices[2]
 			);
-			face_t face = {
-				vertex_indices[0],
-				vertex_indices[1],
-				vertex_indices[2],
-				texcoords[texture_indices[0] - 1],
-				texcoords[texture_indices[1] - 1],
-				texcoords[texture_indices[2] - 1],
-				WHITE
-			};
+			face_t face;
+			face.a = vertex_indices[0];
+			face.b = vertex_indices[1];
+			face.c = vertex_indices[2];
+			if (texcoords.size() > (texture_indices[0] - 1))
+				face.a_uv = texcoords[texture_indices[0] - 1];
+			if (texcoords.size() > (texture_indices[1] - 1))
+				face.b_uv = texcoords[texture_indices[1] - 1];
+			if (texcoords.size() > (texture_indices[2] - 1))
+				face.c_uv = texcoords[texture_indices[2] - 1];
+			face.color = WHITE;
 			mesh.faces.push_back(face);
 		}
 	}
 	mesh.scale = { 1, 1, 1 };
+	
+	std::cout << "Faces = " << mesh.faces.size() << std::endl;
+	std::cout << "Vertices = " << mesh.vertices.size() << std::endl;
+
 	return true;
 }
