@@ -25,13 +25,15 @@ bool is_running = false;
 
 void setup() {
 	is_running = setup_color_buffer();
-	float fov = M_PI / 3.0;
-	float aspect = (float)window_height / (float)window_width;
+	float aspect_x = (float)window_width / (float)window_height;
+	float aspect_y = (float)window_height / (float)window_width;
+	float fov_y = M_PI / 3.0;
+	float fov_x = atan(tan(fov_y/2) * aspect_x) * 2;
 	float z_near = 0.1;
 	float z_far = 100.0;
-	proj_matrix = mat4_make_perspective(fov, aspect, z_near, z_far);
+	proj_matrix = mat4_make_perspective(fov_y, aspect_y, z_near, z_far);
 	
-	init_frustum_planes(fov, z_near, z_far);
+	init_frustum_planes(fov_x, fov_y, z_near, z_far);
 	
 	//mesh_texture = (uint32_t*)REDBRICK_TEXTURE;
 
