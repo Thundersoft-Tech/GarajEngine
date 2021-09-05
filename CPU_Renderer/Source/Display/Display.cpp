@@ -47,6 +47,7 @@ bool setup_sdl() {
 
 bool setup_color_buffer() {
 	color_buffer = (uint32_t*)malloc(sizeof(uint32_t) * window_width * window_height);
+	//z_buffer = (float*)malloc(sizeof(float) * window_width * window_height);
 	z_buffer = (float*)malloc(sizeof(float) * window_width * window_height);
 	if (!z_buffer) {
 		std::cout << "Failed to allocate memory for the z buffer." << std::endl;

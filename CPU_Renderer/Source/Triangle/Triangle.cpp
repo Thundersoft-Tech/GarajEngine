@@ -62,9 +62,11 @@ void draw_triangle_texel(
 
     interpolated_reciprocal_w = 1 - interpolated_reciprocal_w;
     // Only draw the pixel if the depth value is less than the one previously stored in the z buffer
-    if (interpolated_reciprocal_w < z_buffer[(window_width * y) + x]){
-        draw_pixel(x, y, texture[(texture_width * tex_y) + tex_x]);
-        z_buffer[(window_width * y) + x] = interpolated_reciprocal_w;
+    if (y < window_height || (y == window_height && x == 0)) {
+        if (interpolated_reciprocal_w < z_buffer[(window_width * y) + x]) {
+            draw_pixel(x, y, texture[(texture_width * tex_y) + tex_x]);
+            z_buffer[(window_width * y) + x] = interpolated_reciprocal_w;
+        }
     }
 }
 

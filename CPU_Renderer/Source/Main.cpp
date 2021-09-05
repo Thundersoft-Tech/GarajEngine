@@ -141,7 +141,6 @@ void projection(int count = 0) {
 		face_vertices[1] = mesh.vertices[mesh_face.b - 1];
 		face_vertices[2] = mesh.vertices[mesh_face.c - 1];
 
-		triangle_t triangle_to_render;
 		vec4_t transformed_vertices[3];
 
 		// loop all 3 vertices of this current face and apply transformations
@@ -188,7 +187,10 @@ void projection(int count = 0) {
 		polygon_t polygon = create_polygon_from_triangle(
 			vec3_from_vec4(transformed_vertices[0]),
 			vec3_from_vec4(transformed_vertices[1]),
-			vec3_from_vec4(transformed_vertices[2])
+			vec3_from_vec4(transformed_vertices[2]),
+			mesh_face.a_uv,
+			mesh_face.b_uv,
+			mesh_face.c_uv
 		);
 
 		clip_polygon(&polygon);
@@ -200,43 +202,59 @@ void projection(int count = 0) {
 
 		triangles_from_polygon(&polygon, triangles_after_clipping, &num_triangles_after_clipping);
 
+		triangle_t triangle_to_render;
 		for (int t = 0; t < num_triangles_after_clipping; t++) {
 			triangle_t triangle_after_clipping = triangles_after_clipping[t];
-			// loop all vertices and perform projection
-			for (int j = 0; j < 3; j++){
-				// project the current vertex
-				vec4_t projected_point = mat4_mul_vec4_project(proj_matrix, triangle_after_clipping.points[j]);
+			vec4_t projected_points[3];
 
-				// scaling projected point
+			// Loop all three vertices to perform projection and conversion to screen space
+			for (int j = 0; j < 3; j++) {
+				// Project the current vertex using a perspective projection matrix
+				projected_points[j] = mat4_mul_vec4(proj_matrix, triangle_after_clipping.points[j]);
 
-				projected_point.x *= (window_width / 2.0);
-				projected_point.y *= (window_height / 2.0);
+				// Perform perspective divide
+				if (projected_points[j].w != 0) {
+					projected_points[j].x /= projected_points[j].w;
+					projected_points[j].y /= projected_points[j].w;
+					projected_points[j].z /= projected_points[j].w;
+				}
 
-				// invert y values
-				projected_point.y *= -1;
+				// Flip vertically since the y values of the 3D mesh grow bottom->up and in screen space y values grow top->down
+				projected_points[j].y *= -1;
 
-				// translating projected point
-				projected_point.x += (window_width / 2.0);
-				projected_point.y += (window_height / 2.0);
-			
-				triangle_to_render.points[j] = projected_point;
+				// Scale into the view
+				projected_points[j].x *= (window_width / 2.0);
+				projected_points[j].y *= (window_height / 2.0);
+
+				// Translate the projected points to the middle of the screen
+				projected_points[j].x += (window_width / 2.0);
+				projected_points[j].y += (window_height / 2.0);
 			}
 
-			triangle_to_render.texcoords[0] = mesh_face.a_uv;
-			triangle_to_render.texcoords[1] = mesh_face.b_uv;
-			triangle_to_render.texcoords[2] = mesh_face.c_uv;
-		
-			vec3_normalize(&light.direction);
-			float percentage_factor = -vec3_dot(normal_vector, light.direction);
-			uint32_t shaded_color = face_color;
+			// Calculate the shade intensity based on how aliged is the normal with the flipped light direction ray
+			float light_intensity_factor = -vec3_dot(normal_vector, light.direction);
 
-			shaded_color = apply_light_intensity(shaded_color, percentage_factor);
+			// Calculate the triangle color based on the light angle
+			uint32_t triangle_color = apply_light_intensity(mesh_face.color, light_intensity_factor);
 
-			triangle_to_render.color = shaded_color;
+			// Create the final projected triangle that will be rendered in screen space
+			triangle_t triangle_to_render = {
+				{
+					{ projected_points[0].x, projected_points[0].y, projected_points[0].z, projected_points[0].w },
+					{ projected_points[1].x, projected_points[1].y, projected_points[1].z, projected_points[1].w },
+					{ projected_points[2].x, projected_points[2].y, projected_points[2].z, projected_points[2].w }
+				},
+				{
+					{ triangle_after_clipping.texcoords[0].u, triangle_after_clipping.texcoords[0].v },
+					{ triangle_after_clipping.texcoords[1].u, triangle_after_clipping.texcoords[1].v },
+					{ triangle_after_clipping.texcoords[2].u, triangle_after_clipping.texcoords[2].v }
+				},
+				triangle_color
+			};
+
+			// Save the projected triangle in the array of triangles to render
 			if (number_of_triangles < MAX_TRIANGLES) {
-				// save the projected triangle in the array of triangles to render
-				triangles_to_render[number_of_triangles] = triangle_to_render;
-				number_of_triangles += 1;
+				triangles_to_render[number_of_triangles++] = triangle_to_render;
 			}
 		}
 	}
